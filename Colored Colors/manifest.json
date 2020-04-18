@@ -1,8 +1,8 @@
 {
     "name": "Colored Colors",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "manifest_version": 2,
-    "description": "Changes the hue of words which name a color.",
+    "description": "Changes the hue of words to the color they're naming.",
     "author": "James Tedesco",
     "content_scripts": [{
         "matches": [

@@ -1,0 +1,3 @@
+Do you think colors are fun? Or perhaps words are a bit dull?  Well, this extension oughta recolor your feelings about perusing the web. Wherever there's a word that describes a recognized color, the extension will automatically colorize that word with its hue.
+
+This is a passive extension, which is to say: it doesn't do much and you don't have to do much for it. It just vibes, and sometimes - if you'd be so lucky - you stumble into the vibe.

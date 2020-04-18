@@ -1,4 +1,5 @@
-//TODOL add recognition for: CMYK, RGB
+//TODO:
+//- handle colors being used in HTML attributes. We're not interested in them.
 
 main()
 
@@ -17,7 +18,6 @@ function main() {
 
 
 function checkPageForColor(para) {
-
 
     const cssColors = [
         "AliceBlue",
@@ -169,35 +169,65 @@ function checkPageForColor(para) {
         "Yellow",
         "YellowGreen",
     ];
-
     const pluralizedColors = ["AliceBlues", "AntiqueWhites", "Aquas", "Aquamarines", "Azures", "Beiges", "Bisques", "Blacks", "BlanchedAlmonds", "Blues", "BlueViolets", "Browns", "BurlyWoods", "CadetBlues", "Chartreuses", "Chocolates", "Corals", "CornflowerBlues", "Cornsilks", "Crimsons", "Cyans", "DarkBlues", "DarkCyans", "DarkGoldenRods", "DarkGrays", "DarkGreys", "DarkGreens", "DarkKhakis", "DarkMagentas", "DarkOliveGreens", "DarkOranges", "DarkOrchids", "DarkReds", "DarkSalmons", "DarkSeaGreens", "DarkSlateBlues", "DarkSlateGrays", "DarkSlateGreys", "DarkTurquoises", "DarkViolets", "DeepPinks", "DeepSkyBlues", "DimGrays", "DimGreys", "DodgerBlues", "FireBricks", "FloralWhites", "ForestGreens", "Fuchsias", "Gainsboros", "GhostWhites", "Golds", "GoldenRods", "Grays", "Greys", "Greens", "GreenYellows", "HoneyDews", "HotPinks", "IndianReds", "Indigos", "Ivorys", "Khakis", "Lavenders", "LavenderBlushs", "LawnGreens", "LemonChiffons", "LightBlues", "LightCorals", "LightCyans", "LightGoldenRodYellows", "LightGrays", "LightGreys", "LightGreens", "LightPinks", "LightSalmons", "LightSeaGreens", "LightSkyBlues", "LightSlateGrays", "LightSlateGreys", "LightSteelBlues", "LightYellows", "Limes", "LimeGreens", "Linens", "Magentas", "Maroons", "MediumAquaMarines", "MediumBlues", "MediumOrchids", "MediumPurples", "MediumSeaGreens", "MediumSlateBlues", "MediumSpringGreens", "MediumTurquoises", "MediumVioletReds", "MidnightBlues", "MintCreams", "MistyRoses", "Moccasins", "NavajoWhites", "Navys", "OldLaces", "Olives", "OliveDrabs", "Oranges", "OrangeReds", "Orchids", "PaleGoldenRods", "PaleGreens", "PaleTurquoises", "PaleVioletReds", "PapayaWhips", "PeachPuffs", "Perus", "Pinks", "Plums", "PowderBlues", "Purples", "RebeccaPurples", "Reds", "RosyBrowns", "RoyalBlues", "SaddleBrowns", "Salmons", "SandyBrowns", "SeaGreens", "SeaShells", "Siennas", "Silvers", "SkyBlues", "SlateBlues", "SlateGrays", "SlateGreys", "Snows", "SpringGreens", "SteelBlues", "Tans", "Teals", "Thistles", "Tomatos", "Turquoises", "Violets", "Wheats", "Whites", "WhiteSmokes", "Yellows", "YellowGreens"];
-
-    // these colors will be specially given black backgrounds; use sparingly
-    const lightColors = ["white", "whites", "azure", "azures"]
 
 
     // check all colors
     for (color of cssColors) {
-        // I'm testing new features here; all other functions will receive copies
-        checkLowerCase(color, para, lightColors)
-        checkCapitalized(color, para)
+        // Lower case is looking primo rn
+        checkLowerCase(color, para)
 
+        checkProperCase(color, para)
     }
 
-    for (color of pluralizedColors) {
-        checkPlural(color, para)
-    }
-
-
-    checkEdgeCases(para)
+    // handle initialized color formats
+    checkColorFormats(para)
 
 
 }
 
 
-function checkLowerCase(color, para, lightColors) {
-    // lowercase for majority of reading
-    var color = color.toLowerCase()
+function checkLowerCase(color, para) {
+
+    // singular and plural forms of the color
+    var singularColor = color.toLowerCase()
+    var pluralColor = color.toLowerCase().concat("s")
+
+    // merge into array
+    singularAndPlural = [singularColor, pluralColor]
+        // then attempt to change the color of all matching strings
+    singularAndPlural.forEach(color => {
+
+        // check for a singular color
+        if (para.innerText.includes(color)) {
+
+            // find instance of word in the string
+            // the first backslash escapes the second; "\b" == word boundary; "g" == global search; "i" == case-insensitive;
+            re = new RegExp("\\b" + color + "\\b", "gi");
+
+            // formula for inserting the color change
+            var styleParams = `<span style="color:${singularColor};font-weight:bolder;">${color}</span>`
+
+            // if contrast is likely to be low, darken the background
+            if (isColorLight(singularColor)) {
+                styleParams = `<span style="color:${singularColor};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
+            }
+
+            // catch the color yellow
+            if (color == "yellow" || color == "yellows") {
+                styleParams = `<span style="color:gold;font-weight:bolder;">${color}</span>`
+            }
+
+
+            // add color to website HTML
+            para.innerHTML = para.innerHTML.replace(re, styleParams)
+        }
+    })
+
+
+}
+
+function checkProperCase(color, para) {
 
     // contains at least one instance of the color's word
     var paraString = para.innerText
@@ -211,22 +241,17 @@ function checkLowerCase(color, para, lightColors) {
         // "g" == global search; "i" == case-insensitive;
         re = new RegExp("\\b" + color + "\\b", "gi");
 
-        // general insert for color change
+
+        // formula for inserting the color change
         var styleParams = `<span style="color:${color};font-weight:bolder;">${color}</span>`
 
-        // is the current color light
-        let activeLightColor = lightColors.some(thisColor => {
-            return thisColor == color
-        })
-
-        // if yes, change the background
-        if (activeLightColor) {
-            console.log(color, para)
+        // if contrast is likely to be low, darken the background
+        if (isColorLight(color)) {
             styleParams = `<span style="color:${color};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
         }
 
-        // represent the color yellow with gold
-        if (color == "yellow") {
+        // catch the color yellow
+        if (color == "Yellow" || color == "Yellows") {
             styleParams = `<span style="color:gold;font-weight:bolder;">${color}</span>`
         }
 
@@ -236,65 +261,7 @@ function checkLowerCase(color, para, lightColors) {
     }
 }
 
-function checkCapitalized(color, para) {
-
-    // contains at least one instance of the color's word
-    var paraString = para.innerText
-
-    // if the desired color exists, edit the element
-    if (paraString.includes(color)) {
-        // console.log(color, "found!")
-
-
-        // "\\" escapes the first backslash, allowing it; "\b" == word boundary;
-        // "g" == global search; "i" == case-insensitive;
-        re = new RegExp("\\b" + color + "\\b", "gi");
-
-
-        var styleParams = `<span style="color:${color};font-weight:bolder;">${color}</span>`
-        if (color == "white") {
-            styleParams = `<span style="color:${color};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
-        } else if (color == "yellow") {
-            styleParams = `<span style="color:gold;font-weight:bolder;">${color}</span>`
-        }
-
-
-        // add color to website HTML
-        para.innerHTML = para.innerHTML.replace(re, styleParams)
-    }
-}
-
-function checkPlural(color, para) {
-    // lowercase for majority of reading
-    var color = color.toLowerCase()
-
-    // contains at least one instance of the color's word
-    var paraString = para.innerText
-
-    // if the desired color exists, edit the element
-    if (paraString.includes(color)) {
-        // console.log(color, "found!")
-
-
-        // "\\" escapes the first backslash, allowing it; "\b" == word boundary;
-        // "g" == global search; "i" == case-insensitive;
-        re = new RegExp("\\b" + color + "\\b", "gi");
-
-
-        var styleParams = `<span style="color:${color.slice(0,-1)};font-weight:bolder;">${color}</span>`
-        if (color == "whites") {
-            styleParams = `<span style="color:${color.slice(0,-1)};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
-        } else if (color == "yellows") {
-            styleParams = `<span style="color:gold;font-weight:bolder;">${color}</span>`
-        }
-
-
-        // add color to website HTML
-        para.innerHTML = para.innerHTML.replace(re, styleParams)
-    }
-}
-
-function checkEdgeCases(para) {
+function checkColorFormats(para) {
 
     // contains at least one instance of the color's word
     var paraString = para.innerText
@@ -319,4 +286,17 @@ function checkEdgeCases(para) {
         // commit changes to website
         para.innerHTML = para.innerHTML.replace(re, stylizedSpan)
     }
+}
+
+function isColorLight(color) {
+    // these colors will be specially given black backgrounds; use sparingly
+    const lightColors = ["white", "azure", "Azure"]
+
+    // test if the current color is light
+    let activeLightColor = lightColors.some(testingColor => {
+        return testingColor == color
+    })
+
+    // send back out of function
+    return activeLightColor
 }
