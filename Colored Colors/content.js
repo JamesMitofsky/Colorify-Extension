@@ -178,7 +178,8 @@ function checkPageForColor(para) {
 
     // check all colors
     for (color of cssColors) {
-        checkLowerCase(color, para)
+        // I'm testing new features here; all other functions will receive copies
+        checkLowerCase(color, para, lightColors)
         checkCapitalized(color, para)
 
     }
@@ -194,7 +195,7 @@ function checkPageForColor(para) {
 }
 
 
-function checkLowerCase(color, para) {
+function checkLowerCase(color, para, lightColors) {
     // lowercase for majority of reading
     var color = color.toLowerCase()
 
@@ -203,7 +204,7 @@ function checkLowerCase(color, para) {
 
     // if the desired color exists, edit the element
     if (paraString.includes(color)) {
-        console.log(color, "found!")
+        // console.log(color, "found!")
 
 
         // "\\" escapes the first backslash, allowing it; "\b" == word boundary;
@@ -213,10 +214,19 @@ function checkLowerCase(color, para) {
         // general insert for color change
         var styleParams = `<span style="color:${color};font-weight:bolder;">${color}</span>`
 
-        // add background-color if text color is too light
-        if (color == "white") {
+        // is the current color light
+        let activeLightColor = lightColors.some(thisColor => {
+            return thisColor == color
+        })
+
+        // if yes, change the background
+        if (activeLightColor) {
+            console.log(color, para)
             styleParams = `<span style="color:${color};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
-        } else if (color == "yellow") {
+        }
+
+        // represent the color yellow with gold
+        if (color == "yellow") {
             styleParams = `<span style="color:gold;font-weight:bolder;">${color}</span>`
         }
 
@@ -233,7 +243,7 @@ function checkCapitalized(color, para) {
 
     // if the desired color exists, edit the element
     if (paraString.includes(color)) {
-        console.log(color, "found!")
+        // console.log(color, "found!")
 
 
         // "\\" escapes the first backslash, allowing it; "\b" == word boundary;
@@ -263,7 +273,7 @@ function checkPlural(color, para) {
 
     // if the desired color exists, edit the element
     if (paraString.includes(color)) {
-        console.log(color, "found!")
+        // console.log(color, "found!")
 
 
         // "\\" escapes the first backslash, allowing it; "\b" == word boundary;

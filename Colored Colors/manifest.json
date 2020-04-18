@@ -2,7 +2,7 @@
     "name": "Colored Colors",
     "version": "0.0.2",
     "manifest_version": 2,
-    "description": "Automatically colors words describing a color.",
+    "description": "Changes the hue of words which name a color.",
     "author": "James Tedesco",
     "content_scripts": [{
         "matches": [
