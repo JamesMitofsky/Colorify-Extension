@@ -5,13 +5,24 @@ main()
 
 function main() {
 
-    // get main text by paragraph tag
-    var allParagraphs = document.getElementsByTagName("p")
+    // get paragraph and span tags
+    var paraTags = document.getElementsByTagName("p")
+    var spanTags = document.getElementsByTagName("span")
 
-    for (para of allParagraphs) {
-        // check the document for that color
+    //check every para tag
+    for (para of paraTags) {
         checkPageForColor(para)
     }
+
+
+
+
+    // var counter = 0
+    // for (span of spanTags) {
+    //     checkPageForColor(span)
+    //     counter++
+    // }
+    // console.log(counter)
 
     console.log("That's all folks!")
 }
@@ -169,7 +180,7 @@ function checkPageForColor(para) {
         "Yellow",
         "YellowGreen",
     ];
-    const pluralizedColors = ["AliceBlues", "AntiqueWhites", "Aquas", "Aquamarines", "Azures", "Beiges", "Bisques", "Blacks", "BlanchedAlmonds", "Blues", "BlueViolets", "Browns", "BurlyWoods", "CadetBlues", "Chartreuses", "Chocolates", "Corals", "CornflowerBlues", "Cornsilks", "Crimsons", "Cyans", "DarkBlues", "DarkCyans", "DarkGoldenRods", "DarkGrays", "DarkGreys", "DarkGreens", "DarkKhakis", "DarkMagentas", "DarkOliveGreens", "DarkOranges", "DarkOrchids", "DarkReds", "DarkSalmons", "DarkSeaGreens", "DarkSlateBlues", "DarkSlateGrays", "DarkSlateGreys", "DarkTurquoises", "DarkViolets", "DeepPinks", "DeepSkyBlues", "DimGrays", "DimGreys", "DodgerBlues", "FireBricks", "FloralWhites", "ForestGreens", "Fuchsias", "Gainsboros", "GhostWhites", "Golds", "GoldenRods", "Grays", "Greys", "Greens", "GreenYellows", "HoneyDews", "HotPinks", "IndianReds", "Indigos", "Ivorys", "Khakis", "Lavenders", "LavenderBlushs", "LawnGreens", "LemonChiffons", "LightBlues", "LightCorals", "LightCyans", "LightGoldenRodYellows", "LightGrays", "LightGreys", "LightGreens", "LightPinks", "LightSalmons", "LightSeaGreens", "LightSkyBlues", "LightSlateGrays", "LightSlateGreys", "LightSteelBlues", "LightYellows", "Limes", "LimeGreens", "Linens", "Magentas", "Maroons", "MediumAquaMarines", "MediumBlues", "MediumOrchids", "MediumPurples", "MediumSeaGreens", "MediumSlateBlues", "MediumSpringGreens", "MediumTurquoises", "MediumVioletReds", "MidnightBlues", "MintCreams", "MistyRoses", "Moccasins", "NavajoWhites", "Navys", "OldLaces", "Olives", "OliveDrabs", "Oranges", "OrangeReds", "Orchids", "PaleGoldenRods", "PaleGreens", "PaleTurquoises", "PaleVioletReds", "PapayaWhips", "PeachPuffs", "Perus", "Pinks", "Plums", "PowderBlues", "Purples", "RebeccaPurples", "Reds", "RosyBrowns", "RoyalBlues", "SaddleBrowns", "Salmons", "SandyBrowns", "SeaGreens", "SeaShells", "Siennas", "Silvers", "SkyBlues", "SlateBlues", "SlateGrays", "SlateGreys", "Snows", "SpringGreens", "SteelBlues", "Tans", "Teals", "Thistles", "Tomatos", "Turquoises", "Violets", "Wheats", "Whites", "WhiteSmokes", "Yellows", "YellowGreens"];
+    // const pluralizedColors = ["AliceBlues", "AntiqueWhites", "Aquas", "Aquamarines", "Azures", "Beiges", "Bisques", "Blacks", "BlanchedAlmonds", "Blues", "BlueViolets", "Browns", "BurlyWoods", "CadetBlues", "Chartreuses", "Chocolates", "Corals", "CornflowerBlues", "Cornsilks", "Crimsons", "Cyans", "DarkBlues", "DarkCyans", "DarkGoldenRods", "DarkGrays", "DarkGreys", "DarkGreens", "DarkKhakis", "DarkMagentas", "DarkOliveGreens", "DarkOranges", "DarkOrchids", "DarkReds", "DarkSalmons", "DarkSeaGreens", "DarkSlateBlues", "DarkSlateGrays", "DarkSlateGreys", "DarkTurquoises", "DarkViolets", "DeepPinks", "DeepSkyBlues", "DimGrays", "DimGreys", "DodgerBlues", "FireBricks", "FloralWhites", "ForestGreens", "Fuchsias", "Gainsboros", "GhostWhites", "Golds", "GoldenRods", "Grays", "Greys", "Greens", "GreenYellows", "HoneyDews", "HotPinks", "IndianReds", "Indigos", "Ivorys", "Khakis", "Lavenders", "LavenderBlushs", "LawnGreens", "LemonChiffons", "LightBlues", "LightCorals", "LightCyans", "LightGoldenRodYellows", "LightGrays", "LightGreys", "LightGreens", "LightPinks", "LightSalmons", "LightSeaGreens", "LightSkyBlues", "LightSlateGrays", "LightSlateGreys", "LightSteelBlues", "LightYellows", "Limes", "LimeGreens", "Linens", "Magentas", "Maroons", "MediumAquaMarines", "MediumBlues", "MediumOrchids", "MediumPurples", "MediumSeaGreens", "MediumSlateBlues", "MediumSpringGreens", "MediumTurquoises", "MediumVioletReds", "MidnightBlues", "MintCreams", "MistyRoses", "Moccasins", "NavajoWhites", "Navys", "OldLaces", "Olives", "OliveDrabs", "Oranges", "OrangeReds", "Orchids", "PaleGoldenRods", "PaleGreens", "PaleTurquoises", "PaleVioletReds", "PapayaWhips", "PeachPuffs", "Perus", "Pinks", "Plums", "PowderBlues", "Purples", "RebeccaPurples", "Reds", "RosyBrowns", "RoyalBlues", "SaddleBrowns", "Salmons", "SandyBrowns", "SeaGreens", "SeaShells", "Siennas", "Silvers", "SkyBlues", "SlateBlues", "SlateGrays", "SlateGreys", "Snows", "SpringGreens", "SteelBlues", "Tans", "Teals", "Thistles", "Tomatos", "Turquoises", "Violets", "Wheats", "Whites", "WhiteSmokes", "Yellows", "YellowGreens"];
 
 
     // check all colors
@@ -177,7 +188,7 @@ function checkPageForColor(para) {
         // Lower case is looking primo rn
         checkLowerCase(color, para)
 
-        checkProperCase(color, para)
+        // checkProperCase(color, para)
     }
 
     // handle initialized color formats
@@ -201,26 +212,54 @@ function checkLowerCase(color, para) {
         // check for a singular color
         if (para.innerText.includes(color)) {
 
-            // find instance of word in the string
-            // the first backslash escapes the second; "\b" == word boundary; "g" == global search; "i" == case-insensitive;
-            re = new RegExp("\\b" + color + "\\b", "gi");
+
+
+            // maybe:
+            // find angle brackets, push the matches to an array in order of occurence
+            // then, replace each match with "TEMP"
+            // after colorization, replace "TEMP" with array items without /g flag, as as to replace them in their order
+
+
+            // Here's some regex for finding the brackets: /[<].*(color).*[>]/gi
+
+
+            // interrupt code when encountering color in attribute tag
+            // BAD_FORMULA = new RegExp("[<].*(" + color + ").*[>]", "i")
+            // lit formula can be found below
+
+            // let ignoreHTMLRegExp = new RegExp("<[^<]*?(" + violet + ")[^<]*?>", 'gi')
+            // para.innherHTML = para.innerHTML.replace(ignoreHTMLColor, `${ignoreHTMLColor}TEMPORARY`)
+
+
+            newExp = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>)(\\b(' + color + ')\\b)', 'gi')
+
+
+
 
             // formula for inserting the color change
-            var styleParams = `<span style="color:${singularColor};font-weight:bolder;">${color}</span>`
+            var stylizedWord = `<span style="color:${singularColor};font-weight:bolder;">${color}</span>`
 
             // if contrast is likely to be low, darken the background
             if (isColorLight(singularColor)) {
-                styleParams = `<span style="color:${singularColor};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
+                stylizedWord = `<span style="color:${singularColor};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
             }
 
             // catch the color yellow
             if (color == "yellow" || color == "yellows") {
-                styleParams = `<span style="color:gold;font-weight:bolder;">${color}</span>`
+                stylizedWord = `<span style="color:gold;font-weight:bolder;">${color}</span>`
             }
 
 
+
+
+
+            // find instance of word in the string
+            // the first backslash escapes the second; "\b" == word boundary; "g" == global search; "i" == case-insensitive;
+            // var findWholeWord = new RegExp("\\b" + color + "\\b", "gi");
+
             // add color to website HTML
-            para.innerHTML = para.innerHTML.replace(re, styleParams)
+            para.innerHTML = para.innerHTML.replace(newExp, stylizedWord)
+
         }
     })
 
@@ -299,4 +338,18 @@ function isColorLight(color) {
 
     // send back out of function
     return activeLightColor
+}
+
+// test function
+function checkHTMLBodyTest(color) {
+    var body = document.body.innerHTML
+
+    re = new RegExp("\\b" + color + "\\b", "gi");
+
+
+    // formula for inserting the color change
+    var styleParams = `<span style="color:${color};font-weight:bolder;">PROOF</span>`
+
+    // add color to website HTML
+    body = body.replace(re, styleParams)
 }
