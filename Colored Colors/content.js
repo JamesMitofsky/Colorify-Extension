@@ -179,8 +179,17 @@ function checkPageForColor(para) {
         "WhiteSmoke",
         "Yellow",
         "YellowGreen",
-    ];
-    // const pluralizedColors = ["AliceBlues", "AntiqueWhites", "Aquas", "Aquamarines", "Azures", "Beiges", "Bisques", "Blacks", "BlanchedAlmonds", "Blues", "BlueViolets", "Browns", "BurlyWoods", "CadetBlues", "Chartreuses", "Chocolates", "Corals", "CornflowerBlues", "Cornsilks", "Crimsons", "Cyans", "DarkBlues", "DarkCyans", "DarkGoldenRods", "DarkGrays", "DarkGreys", "DarkGreens", "DarkKhakis", "DarkMagentas", "DarkOliveGreens", "DarkOranges", "DarkOrchids", "DarkReds", "DarkSalmons", "DarkSeaGreens", "DarkSlateBlues", "DarkSlateGrays", "DarkSlateGreys", "DarkTurquoises", "DarkViolets", "DeepPinks", "DeepSkyBlues", "DimGrays", "DimGreys", "DodgerBlues", "FireBricks", "FloralWhites", "ForestGreens", "Fuchsias", "Gainsboros", "GhostWhites", "Golds", "GoldenRods", "Grays", "Greys", "Greens", "GreenYellows", "HoneyDews", "HotPinks", "IndianReds", "Indigos", "Ivorys", "Khakis", "Lavenders", "LavenderBlushs", "LawnGreens", "LemonChiffons", "LightBlues", "LightCorals", "LightCyans", "LightGoldenRodYellows", "LightGrays", "LightGreys", "LightGreens", "LightPinks", "LightSalmons", "LightSeaGreens", "LightSkyBlues", "LightSlateGrays", "LightSlateGreys", "LightSteelBlues", "LightYellows", "Limes", "LimeGreens", "Linens", "Magentas", "Maroons", "MediumAquaMarines", "MediumBlues", "MediumOrchids", "MediumPurples", "MediumSeaGreens", "MediumSlateBlues", "MediumSpringGreens", "MediumTurquoises", "MediumVioletReds", "MidnightBlues", "MintCreams", "MistyRoses", "Moccasins", "NavajoWhites", "Navys", "OldLaces", "Olives", "OliveDrabs", "Oranges", "OrangeReds", "Orchids", "PaleGoldenRods", "PaleGreens", "PaleTurquoises", "PaleVioletReds", "PapayaWhips", "PeachPuffs", "Perus", "Pinks", "Plums", "PowderBlues", "Purples", "RebeccaPurples", "Reds", "RosyBrowns", "RoyalBlues", "SaddleBrowns", "Salmons", "SandyBrowns", "SeaGreens", "SeaShells", "Siennas", "Silvers", "SkyBlues", "SlateBlues", "SlateGrays", "SlateGreys", "Snows", "SpringGreens", "SteelBlues", "Tans", "Teals", "Thistles", "Tomatos", "Turquoises", "Violets", "Wheats", "Whites", "WhiteSmokes", "Yellows", "YellowGreens"];
+    ]
+
+    //reg expressions here:
+    // maybe: find angle brackets, push the matches to an array in order of occurence, then, replace each match with "TEMP"; after colorization, replace "TEMP" with array items without /g flag, as as to replace them in their order
+
+    // fancy pants expression to deal with wikipedia links
+    // ignoresHTMLBeforeColor = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>[^<]*?)(?<=.*?)(\\b(' + color + ')\\b)', 'gi')
+
+    // simple pants expression for most cases
+    // findsColorOutsideBrackets = new RegExp('(?<=>.*?)\\b(' + color + ')\\b(?=<.*?)', 'gi')
+
 
 
     // check all colors
@@ -188,7 +197,7 @@ function checkPageForColor(para) {
         // Lower case is looking primo rn
         checkLowerCase(color, para)
 
-        checkProperCase(color, para)
+        // checkProperCase(color, para)
     }
 
     // handle initialized color formats
@@ -213,29 +222,6 @@ function checkLowerCase(color, para) {
         if (para.innerText.includes(color)) {
 
 
-
-            // maybe:
-            // find angle brackets, push the matches to an array in order of occurence
-            // then, replace each match with "TEMP"
-            // after colorization, replace "TEMP" with array items without /g flag, as as to replace them in their order
-
-
-            // Here's some regex for finding the brackets: /[<].*(color).*[>]/gi
-
-
-            // interrupt code when encountering color in attribute tag
-            // BAD_FORMULA = new RegExp("[<].*(" + color + ").*[>]", "i")
-            // lit formula can be found below
-
-            // let ignoreHTMLRegExp = new RegExp("<[^<]*?(" + violet + ")[^<]*?>", 'gi')
-            // para.innherHTML = para.innerHTML.replace(ignoreHTMLColor, `${ignoreHTMLColor}TEMPORARY`)
-
-
-            newExp = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>)(\\b(' + color + ')\\b)', 'gi')
-
-
-
-
             // formula for inserting the color change
             var stylizedWord = `<span style="color:${singularColor};font-weight:bolder;">${color}</span>`
 
@@ -251,14 +237,9 @@ function checkLowerCase(color, para) {
 
 
 
-
-
-            // find instance of word in the string
-            // the first backslash escapes the second; "\b" == word boundary; "g" == global search; "i" == case-insensitive;
-            // var findWholeWord = new RegExp("\\b" + color + "\\b", "gi");
-
             // add color to website HTML
-            para.innerHTML = para.innerHTML.replace(newExp, stylizedWord)
+            findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
+            para.innerHTML = para.innerHTML.replace(findColor, stylizedWord)
 
         }
     })
@@ -266,53 +247,48 @@ function checkLowerCase(color, para) {
 
 }
 
-function checkProperCase(color, para) {
+function checkProperCase(color, para, findColor) {
 
     // contains at least one instance of the color's word
     var paraString = para.innerText
 
     // if the desired color exists, edit the element
     if (paraString.includes(color)) {
-        // console.log(color, "found!")
-
-
-
 
 
         // formula for inserting the color change
-        var styleParams = `<span style="color:${color};font-weight:bolder;">${color}</span>`
+        var stylizedWord = `<span style="color:${color};font-weight:bolder;">${color}</span>`
 
         // if contrast is likely to be low, darken the background
         if (isColorLight(color)) {
-            styleParams = `<span style="color:${color};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
+            stylizedWord = `<span style="color:${color};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
         }
 
         // catch the color yellow
         if (color == "Yellow" || color == "Yellows") {
-            styleParams = `<span style="color:gold;font-weight:bolder;">${color}</span>`
+            stylizedWord = `<span style="color:gold;font-weight:bolder;">${color}</span>`
         }
 
-        // ignores colors in HTML
-        newExp = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>)(\\b(' + color + ')\\b)', 'gi')
-            // add color to website HTML
-        para.innerHTML = para.innerHTML.replace(newExp, styleParams)
+        // add color to website HTML
+        findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
+        para.innerHTML = para.innerHTML.replace(findColor, stylizedWord)
     }
 }
 
-function checkColorFormats(para) {
+function checkColorFormats(para, findColor) {
 
     // contains at least one instance of the color's word
     var paraString = para.innerText
 
     // check cyan, magenta, yellow, and key/black
     if (paraString.includes('CMYK')) {
-        newExp = new RegExp('(?<=<[^<]*?(' + 'CMYK' + ')[^<]*?>)(\\b(' + 'CMYK' + ')\\b)', 'gi')
 
         // wrap coloring here
         stylizedSpan = `<span style="color:cyan;font-weight:bolder;">C</span><span style="color:magenta;font-weight:bolder;">M</span><span style="color:gold;font-weight:bolder;">Y</span><span style="color:black;font-weight:bolder;">K</span>`
 
-        // commit changes to website
-        para.innerHTML = para.innerHTML.replace(newExp, stylizedSpan)
+        // add color to website HTML
+        findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
+        para.innerHTML = para.innerHTML.replace(findColor, stylizedSpan)
 
         // check for RBG string
     } else if (paraString.includes('RGB')) {
@@ -321,8 +297,10 @@ function checkColorFormats(para) {
         // wrap coloring here
         stylizedSpan = `<span style="color:red;font-weight:bolder;">R</span><span style="color:green;font-weight:bolder;">G</span><span style="color:blue;font-weight:bolder;">B</span>`
 
-        // commit changes to website
-        para.innerHTML = para.innerHTML.replace(newExp, stylizedSpan)
+
+        // add color to website HTML
+        findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
+        para.innerHTML = para.innerHTML.replace(findColor, stylizedSpan)
     }
 }
 
@@ -343,12 +321,13 @@ function isColorLight(color) {
 function checkHTMLBodyTest(color) {
     var body = document.body.innerHTML
 
-    re = new RegExp("\\b" + color + "\\b", "gi");
 
 
     // formula for inserting the color change
-    var styleParams = `<span style="color:${color};font-weight:bolder;">PROOF</span>`
+    var stylizedWord = `<span style="color:${color};font-weight:bolder;">PROOF</span>`
+
 
     // add color to website HTML
-    body = body.replace(re, styleParams)
+    findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
+    body = body.replace(findColor, stylizedWord)
 }
