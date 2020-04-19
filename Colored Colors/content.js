@@ -188,7 +188,7 @@ function checkPageForColor(para) {
         // Lower case is looking primo rn
         checkLowerCase(color, para)
 
-        // checkProperCase(color, para)
+        checkProperCase(color, para)
     }
 
     // handle initialized color formats
@@ -276,9 +276,7 @@ function checkProperCase(color, para) {
         // console.log(color, "found!")
 
 
-        // "\\" escapes the first backslash, allowing it; "\b" == word boundary;
-        // "g" == global search; "i" == case-insensitive;
-        re = new RegExp("\\b" + color + "\\b", "gi");
+
 
 
         // formula for inserting the color change
@@ -294,9 +292,10 @@ function checkProperCase(color, para) {
             styleParams = `<span style="color:gold;font-weight:bolder;">${color}</span>`
         }
 
-
-        // add color to website HTML
-        para.innerHTML = para.innerHTML.replace(re, styleParams)
+        // ignores colors in HTML
+        newExp = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>)(\\b(' + color + ')\\b)', 'gi')
+            // add color to website HTML
+        para.innerHTML = para.innerHTML.replace(newExp, styleParams)
     }
 }
 
@@ -307,23 +306,23 @@ function checkColorFormats(para) {
 
     // check cyan, magenta, yellow, and key/black
     if (paraString.includes('CMYK')) {
-        re = new RegExp("\\b" + 'CMYK' + "\\b", "gi");
+        newExp = new RegExp('(?<=<[^<]*?(' + 'CMYK' + ')[^<]*?>)(\\b(' + 'CMYK' + ')\\b)', 'gi')
 
         // wrap coloring here
         stylizedSpan = `<span style="color:cyan;font-weight:bolder;">C</span><span style="color:magenta;font-weight:bolder;">M</span><span style="color:gold;font-weight:bolder;">Y</span><span style="color:black;font-weight:bolder;">K</span>`
 
         // commit changes to website
-        para.innerHTML = para.innerHTML.replace(re, stylizedSpan)
+        para.innerHTML = para.innerHTML.replace(newExp, stylizedSpan)
 
         // check for RBG string
     } else if (paraString.includes('RGB')) {
-        re = new RegExp("\\b" + 'RGB' + "\\b", "gi");
+        newExp = new RegExp('(?<=<[^<]*?(' + 'RGB' + ')[^<]*?>)(\\b(' + 'RGB' + ')\\b)', 'gi')
 
         // wrap coloring here
         stylizedSpan = `<span style="color:red;font-weight:bolder;">R</span><span style="color:green;font-weight:bolder;">G</span><span style="color:blue;font-weight:bolder;">B</span>`
 
         // commit changes to website
-        para.innerHTML = para.innerHTML.replace(re, stylizedSpan)
+        para.innerHTML = para.innerHTML.replace(newExp, stylizedSpan)
     }
 }
 
