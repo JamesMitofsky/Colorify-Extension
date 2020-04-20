@@ -197,7 +197,7 @@ function checkPageForColor(para) {
         // Lower case is looking primo rn
         checkLowerCase(color, para)
 
-        // checkProperCase(color, para)
+        checkProperCase(color, para)
     }
 
     // handle initialized color formats
@@ -239,6 +239,12 @@ function checkLowerCase(color, para) {
 
             // add color to website HTML
             findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
+
+            // wiki
+            if (document.location.href.includes('wikipedia')) {
+                findColor = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>[^<]*?)(?<=.*?)(\\b(' + color + ')\\b)', 'gi')
+            }
+
             para.innerHTML = para.innerHTML.replace(findColor, stylizedWord)
 
         }
@@ -271,6 +277,11 @@ function checkProperCase(color, para, findColor) {
 
         // add color to website HTML
         findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
+
+        // handle wiki
+        if (document.location.href.includes('wikipedia')) {
+            findColor = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>[^<]*?)(?<=.*?)(\\b(' + color + ')\\b)', 'gi')
+        }
         para.innerHTML = para.innerHTML.replace(findColor, stylizedWord)
     }
 }
@@ -288,6 +299,12 @@ function checkColorFormats(para, findColor) {
 
         // add color to website HTML
         findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
+
+
+        if (document.location.href.includes('wikipedia')) {
+            findColor = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>[^<]*?)(?<=.*?)(\\b(' + color + ')\\b)', 'gi')
+        }
+
         para.innerHTML = para.innerHTML.replace(findColor, stylizedSpan)
 
         // check for RBG string
@@ -300,6 +317,11 @@ function checkColorFormats(para, findColor) {
 
         // add color to website HTML
         findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
+
+        if (document.location.href.includes('wikipedia')) {
+            findColor = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>[^<]*?)(?<=.*?)(\\b(' + color + ')\\b)', 'gi')
+        }
+
         para.innerHTML = para.innerHTML.replace(findColor, stylizedSpan)
     }
 }
