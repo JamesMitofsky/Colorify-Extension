@@ -179,7 +179,7 @@ function checkPageForColor(para) {
     }
 
     // handle initialized color formats
-    let colorFormats = ['RGB', 'CMYK']
+    let colorFormats = ['RGB', 'CMYK', 'rainbow', 'ROYGBIV']
 
     for (color of colorFormats) {
         checkColorFormats(color, para)
@@ -300,6 +300,10 @@ function checkColorFormats(sentColor, para) {
             stylizedSpan = `<span style="color:red;font-weight:bolder;">R</span><span style="color:green;font-weight:bolder;">G</span><span style="color:blue;font-weight:bolder;">B</span>`
         } else if (sentColor == 'CMYK') {
             stylizedSpan = `<span style="color:cyan;font-weight:bolder;">C</span><span style="color:magenta;font-weight:bolder;">M</span><span style="color:gold;font-weight:bolder;">Y</span><span style="color:black;font-weight:bolder;">K</span>`
+        } else if (sentColor == 'rainbow') {
+            stylizedSpan = '<span style="color:red;font-weight:bolder;">r</span><span style="color:orange;font-weight:bolder;">a</span><span style="color:gold;font-weight:bolder;">i</span><span style="color:green;font-weight:bolder;">n</span><span style="color:blue;font-weight:bolder;">b</span><span style="color:indigo;font-weight:bolder;">o</span><span style="color:violet;font-weight:bolder;">w</span>'
+        } else if (sentColor == 'ROYGBIV') {
+            stylizedSpan = '<span style="color:red;font-weight:bolder;">R</span><span style="color:orange;font-weight:bolder;">O</span><span style="color:gold;font-weight:bolder;">Y</span><span style="color:green;font-weight:bolder;">G</span><span style="color:blue;font-weight:bolder;">B</span><span style="color:indigo;font-weight:bolder;">I</span><span style="color:violet;font-weight:bolder;">V</span>'
         } else { return }
 
 
