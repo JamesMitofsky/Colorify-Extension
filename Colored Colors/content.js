@@ -1,5 +1,5 @@
-//TODO:
-//- handle colors being used in HTML attributes. We're not interested in them.
+// TODO:
+// Fix color formats function, making it non-specific to wiki like the main character cases function
 
 main()
 
@@ -29,7 +29,6 @@ function main() {
 
 
 function checkPageForColor(para) {
-
     const cssColors = [
         "AliceBlue",
         "AntiqueWhite",
@@ -181,100 +180,81 @@ function checkPageForColor(para) {
         "YellowGreen",
     ]
 
-    //reg expressions here:
-    // maybe: find angle brackets, push the matches to an array in order of occurence, then, replace each match with "TEMP"; after colorization, replace "TEMP" with array items without /g flag, as as to replace them in their order
-
-    // fancy pants expression to deal with wikipedia links
-    // ignoresHTMLBeforeColor = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>[^<]*?)(?<=.*?)(\\b(' + color + ')\\b)', 'gi')
-
-    // simple pants expression for most cases
-    // findsColorOutsideBrackets = new RegExp('(?<=>.*?)\\b(' + color + ')\\b(?=<.*?)', 'gi')
-
-
-
     // check all colors
     for (color of cssColors) {
-        // Lower case is looking primo rn
-        checkLowerCase(color, para)
+        // lower and proper case checks for singular and plural forms
+        checkAllCases(color, para)
 
-        // checkProperCase(color, para)
     }
 
     // handle initialized color formats
-    // checkColorFormats(para)
+    checkColorFormats(para)
 
 
 }
 
 
-function checkLowerCase(color, para) {
+function checkAllCases(sentColor, para) {
 
-    // singular and plural forms of the color
-    var singularColor = color.toLowerCase()
-    var pluralColor = color.toLowerCase().concat("s")
+    // declare different forms
+    var pluralColor = sentColor.toLowerCase().concat("s");
+    var singularColor = sentColor.toLowerCase();
+    var properCasePluralColor = sentColor.concat("s");
+    var properCaseColor = sentColor
 
-    // merge into array
-    var pluralAndSingular = [pluralColor, singularColor];
-    // check plural first, since checking singular 1st would eliminate all instances of plural
-    pluralAndSingular.forEach(color => {
+    // list plurals first, ensuring the shorter singulars don't negate them
+    var differentForms = [pluralColor, singularColor, properCasePluralColor, properCaseColor];
+
+    differentForms.forEach(color => {
 
         // check for a singular color
         if (para.innerText.includes(color)) {
 
 
-            // formula for inserting the color change
-            var stylizedWord = `<span style="color:${singularColor};font-weight:bolder;">${color}</span>`
-                // if contrast is likely to be low, darken the background
+            // baseline formula
+            var stylizedWord = `<span style="color:${singularColor};font-weight:bolder;">${color}</span>`;
+
+            // if contrast is likely to be low, darken the background
             if (isColorLight(singularColor)) {
+                // includes dark background
                 stylizedWord = `<span style="color:${singularColor};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
             }
+
             // catch the color yellow
-            if (color == "yellow" || color == "yellows") {
+            if (singularColor == "yellow") {
                 stylizedWord = `<span style="color:gold;font-weight:bolder;">${color}</span>`
             }
 
-            // finds only the first half of an HTML element declaration
-            var colorInHTML = new RegExp('(<[^<]*?(' + color + ')[^<]*?>.*?(' + color + ').*?<\/[^<>]*?>)', 'gi');
+
+
+
+
+            // finds only the first half of an HTML element declaration, checking if the keyword is in it, making it susceptible to unwanted changes
+            var colorInHTML = new RegExp('(<[^<]*?(' + color + ')[^<]*?>.*?(' + color + ').*?<\/[^<>]*?>)', 'g');
             // record html strings for to be injected later
             var htmlMatches = para.innerHTML.match(colorInHTML);
-
-
-
-            // now, having saved the html values, remove them from the page
             if (htmlMatches) {
                 // if there are non-zero # of HTML matches, remove them for the time being
                 para.innerHTML = para.innerHTML.replace(colorInHTML, ' TEMPORARY ');
             }
 
 
-
-
             // find colors located in plain text
-            findColor = new RegExp('\\b(' + color + ')\\b', 'gi');
+            findColor = new RegExp('\\b(' + color + ')\\b', 'g');
             // colorize words by their name, using a span tag
             para.innerHTML = para.innerHTML.replace(findColor, stylizedWord);
 
 
 
 
-            // if there were any instances of an HTML color
-            if (htmlMatches) {
-                // reintroduce the temporarily removed HTML
-                for (match of htmlMatches) {
+            // if no HTML, end function
+            if (!htmlMatches) { return }
 
-                    // adds blue underlining to indicate these are links
-                    stylizedWord = `<span style="color:${singularColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;">${color}</span>`
 
-                    // find last instance of the color-value
-                    lastColor = new RegExp(`\\b(${color})\\b(?!.*?(${color}))`, 'gi');
-                    // in string format, stylize this last color (aka: the color not wrapped in the HTML tag) within the context of the match
-                    changedMatch = match.replace(lastColor, stylizedWord);
+            checkHTMLMatches(color, singularColor, htmlMatches)
 
-                    // send the HTML match back to the website, removing the placeholder text
-                    para.innerHTML = para.innerHTML.replace(' TEMPORARY ', changedMatch);
 
-                }
-            }
+
 
 
 
@@ -284,39 +264,34 @@ function checkLowerCase(color, para) {
 
 }
 
-function checkProperCase(color, para, findColor) {
 
-    // contains at least one instance of the color's word
-    var paraString = para.innerText
-
-    // if the desired color exists, edit the element
-    if (paraString.includes(color)) {
+function checkHTMLMatches(color, singularColor, htmlMatches) {
+    // reformat all HTML strings
+    for (match of htmlMatches) {
 
 
-        // formula for inserting the color change
-        var stylizedWord = `<span style="color:${color};font-weight:bolder;">${color}</span>`
-
-        // if contrast is likely to be low, darken the background
-        if (isColorLight(color)) {
-            stylizedWord = `<span style="color:${color};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
+        // nuance styles to match situation
+        if (isColorLight(singularColor)) {
+            var darkBackground = 'background-color:black;padding:0 3px;border-radius:3px;'
         }
 
-        // catch the color yellow
-        if (color == "Yellow" || color == "Yellows") {
-            stylizedWord = `<span style="color:gold;font-weight:bolder;">${color}</span>`
-        }
+        // final stylized productS
+        stylizedWord = `<span style="color:${singularColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;${darkBackground}">${color}</span>`
 
-        // add color to website HTML
-        findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
+        // find last instance of the color-value (looks ahead, validating there are no other encounters with the keyword, not checking for word breaks since we can be more flexible in our rejection criteria)
+        lastColor = new RegExp(`\\b(${color})\\b(?!.*?(${color}))`, 'g');
 
-        // handle wiki
-        if (document.location.href.includes('wikipedia')) {
-            findColor = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>[^<]*?)(?<=.*?)(\\b(' + color + ')\\b)', 'gi')
-        }
-        para.innerHTML = para.innerHTML.replace(findColor, stylizedWord)
+        // stylize the color right before the HTML tag closes
+        changedMatch = match.replace(lastColor, stylizedWord);
+
+        // send the HTML string back to the website, replacing the placeholder text
+        para.innerHTML = para.innerHTML.replace(' TEMPORARY ', changedMatch);
+
     }
 }
 
+
+// checks irregular color formattings
 function checkColorFormats(para, findColor) {
 
     // contains at least one instance of the color's word
@@ -359,9 +334,10 @@ function checkColorFormats(para, findColor) {
     }
 }
 
+// determines if dark background is needed
 function isColorLight(color) {
     // these colors will be specially given black backgrounds; use sparingly
-    const lightColors = ["white", "azure", "Azure"]
+    const lightColors = ["white", "azure", "Azure", "White"]
 
     // test if the current color is light
     let activeLightColor = lightColors.some(testingColor => {
@@ -370,19 +346,4 @@ function isColorLight(color) {
 
     // send back out of function
     return activeLightColor
-}
-
-// test function
-function checkHTMLBodyTest(color) {
-    var body = document.body.innerHTML
-
-
-
-    // formula for inserting the color change
-    var stylizedWord = `<span style="color:${color};font-weight:bolder;">PROOF</span>`
-
-
-    // add color to website HTML
-    findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
-    body = body.replace(findColor, stylizedWord)
 }
