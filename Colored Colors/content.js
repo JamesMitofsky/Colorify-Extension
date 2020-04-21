@@ -14,16 +14,6 @@ function main() {
         checkPageForColor(para)
     }
 
-
-
-
-    // var counter = 0
-    // for (span of spanTags) {
-    //     checkPageForColor(span)
-    //     counter++
-    // }
-    // console.log(counter)
-
     console.log("That's all folks!")
 }
 
@@ -190,8 +180,9 @@ function checkPageForColor(para) {
 
     // handle initialized color formats
     let colorFormats = ['RGB', 'CYMK']
+
     for (color of colorFormats) {
-        checkColorFormats(para, colorFormats)
+        checkColorFormats(color, para)
     }
 
 }
@@ -255,6 +246,7 @@ function checkAllCases(sentColor, para) {
 
 }
 
+// returns any matches
 function attemptHTMLRemoval(color, para) {
     // finds only the first half of an HTML element declaration, checking if the keyword is in it, making it susceptible to unwanted changes
     var colorInHTML = new RegExp('(<[^<]*?(' + color + ')[^<]*?>.*?(' + color + ').*?<\/[^<>]*?>)', 'g');
@@ -274,20 +266,19 @@ function checkHTMLMatches(color, singularColor, htmlMatches) {
     // reformat all HTML strings
     for (match of htmlMatches) {
 
-
         // nuance styles to match situation
         if (isColorLight(singularColor)) {
             var darkBackground = 'background-color:black;padding:0 3px;border-radius:3px;'
         }
 
-        // final stylized productS
-        stylizedWord = `<span style="color:${singularColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;${darkBackground}">${color}</span>`
+        // final stylized product
+        let stylizedWord = `<span style="color:${singularColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;${darkBackground}">${color}</span>`
 
         // find last instance of the color-value (looks ahead, validating there are no other encounters with the keyword, not checking for word breaks since we can be more flexible in our rejection criteria)
-        lastColor = new RegExp(`\\b(${color})\\b(?!.*?(${color}))`, 'g');
+        let lastColor = new RegExp(`\\b(${color})\\b(?!.*?(${color}))`, 'g');
 
         // stylize the color right before the HTML tag closes
-        changedMatch = match.replace(lastColor, stylizedWord);
+        let changedMatch = match.replace(lastColor, stylizedWord);
 
         // send the HTML string back to the website, replacing the placeholder text
         para.innerHTML = para.innerHTML.replace(' TEMPORARY ', changedMatch);
@@ -297,28 +288,43 @@ function checkHTMLMatches(color, singularColor, htmlMatches) {
 
 
 // checks irregular color formattings
-function checkColorFormats(para, sentColor) {
-
+function checkColorFormats(sentColor, para) {
 
     // check cyan, magenta, yellow, and key/black
     if (para.innerText.includes(sentColor)) {
 
         if (sentColor == 'RGB') {
-            let stylizedSpan = `<span style="color:red;font-weight:bolder;">R</span><span style="color:green;font-weight:bolder;">G</span><span style="color:blue;font-weight:bolder;">B</span>`
+            stylizedSpan = `<span style="color:red;font-weight:bolder;">R</span><span style="color:green;font-weight:bolder;">G</span><span style="color:blue;font-weight:bolder;">B</span>`
         } else if (sentColor == 'CYMK') {
-            let stylizedSpan = `<span style="color:cyan;font-weight:bolder;">C</span><span style="color:magenta;font-weight:bolder;">M</span><span style="color:gold;font-weight:bolder;">Y</span><span style="color:black;font-weight:bolder;">K</span>`
-        }
-
-        // baseline regExp
-        sentColor = new RegExp('\\b(' + color + ')\\b', 'gi');
+            stylizedSpan = `<span style="color:cyan;font-weight:bolder;">C</span><span style="color:magenta;font-weight:bolder;">M</span><span style="color:gold;font-weight:bolder;">Y</span><span style="color:black;font-weight:bolder;">K</span>`
+        } else { return }
 
 
-        // remove HTML instances
+        // remove any color-keyword sensetive HTML
+        let htmlMatches = attemptHTMLRemoval(sentColor, para)
 
+        console.log('matches', htmlMatches)
 
-
+        // baseline regExp, hanlding normal text
+        findColor = new RegExp('\\b(' + sentColor + ')\\b', 'g');
         // commit change to website
-        para.innerHTML = para.innerHTML.replace(sentColor, stylizedSpan)
+        para.innerHTML = para.innerHTML.replace(findColor, stylizedSpan)
+
+
+        // end if no HTML was removed, but continue if some needs to be added back in
+        if (!htmlMatches) { return }
+
+        for (match of htmlMatches) {
+            console.log('checking html\n\n', stylizedSpan)
+                // last instance of the format
+            let lastColor = new RegExp(`\\b(${sentColor})\\b(?!.*?(${sentColor}))`, 'g');
+
+            // stylize the color right before the HTML tag closes
+            let changedMatch = match.replace(lastColor, stylizedSpan);
+
+            // send the HTML string back to the website, replacing the placeholder text
+            para.innerHTML = para.innerHTML.replace(' TEMPORARY ', changedMatch);
+        }
     }
 }
 
