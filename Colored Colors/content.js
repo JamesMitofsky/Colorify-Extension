@@ -29,7 +29,8 @@ function main() {
 
 
 function checkPageForColor(para) {
-    const cssColors = [
+
+    let cssColors = [
         "AliceBlue",
         "AntiqueWhite",
         "Aqua",
@@ -188,8 +189,10 @@ function checkPageForColor(para) {
     }
 
     // handle initialized color formats
-    checkColorFormats(para)
-
+    let colorFormats = ['RGB', 'CYMK']
+    for (color of colorFormats) {
+        checkColorFormats(para, colorFormats)
+    }
 
 }
 
@@ -225,18 +228,8 @@ function checkAllCases(sentColor, para) {
                 stylizedWord = `<span style="color:gold;font-weight:bolder;">${color}</span>`
             }
 
-
-
-
-
-            // finds only the first half of an HTML element declaration, checking if the keyword is in it, making it susceptible to unwanted changes
-            var colorInHTML = new RegExp('(<[^<]*?(' + color + ')[^<]*?>.*?(' + color + ').*?<\/[^<>]*?>)', 'g');
-            // record html strings for to be injected later
-            var htmlMatches = para.innerHTML.match(colorInHTML);
-            if (htmlMatches) {
-                // if there are non-zero # of HTML matches, remove them for the time being
-                para.innerHTML = para.innerHTML.replace(colorInHTML, ' TEMPORARY ');
-            }
+            // remove any color-keyword sensetive HTML
+            let htmlMatches = attemptHTMLRemoval(color, para)
 
 
             // find colors located in plain text
@@ -245,12 +238,10 @@ function checkAllCases(sentColor, para) {
             para.innerHTML = para.innerHTML.replace(findColor, stylizedWord);
 
 
-
-
-            // if no HTML, end function
+            // if no HTML had to be removed, there's nothing more to do
             if (!htmlMatches) { return }
 
-
+            // if HTML was removed, let's add it back in
             checkHTMLMatches(color, singularColor, htmlMatches)
 
 
@@ -264,6 +255,20 @@ function checkAllCases(sentColor, para) {
 
 }
 
+function attemptHTMLRemoval(color, para) {
+    // finds only the first half of an HTML element declaration, checking if the keyword is in it, making it susceptible to unwanted changes
+    var colorInHTML = new RegExp('(<[^<]*?(' + color + ')[^<]*?>.*?(' + color + ').*?<\/[^<>]*?>)', 'g');
+
+    // record html strings for to be injected later
+    var htmlMatches = para.innerHTML.match(colorInHTML);
+
+    if (htmlMatches) {
+        // if there are non-zero # of HTML matches, remove them for the time being
+        para.innerHTML = para.innerHTML.replace(colorInHTML, ' TEMPORARY ');
+    }
+
+    return htmlMatches
+}
 
 function checkHTMLMatches(color, singularColor, htmlMatches) {
     // reformat all HTML strings
@@ -292,45 +297,28 @@ function checkHTMLMatches(color, singularColor, htmlMatches) {
 
 
 // checks irregular color formattings
-function checkColorFormats(para, findColor) {
+function checkColorFormats(para, sentColor) {
 
-    // contains at least one instance of the color's word
-    var paraString = para.innerText
 
     // check cyan, magenta, yellow, and key/black
-    if (paraString.includes('CMYK')) {
+    if (para.innerText.includes(sentColor)) {
 
-        color = 'CMYK'
-
-        // wrap coloring here
-        stylizedSpan = `<span style="color:cyan;font-weight:bolder;">C</span><span style="color:magenta;font-weight:bolder;">M</span><span style="color:gold;font-weight:bolder;">Y</span><span style="color:black;font-weight:bolder;">K</span>`
-
-        // add color to website HTML
-        findColor = new RegExp('\\b(' + color + ')\\b', 'gi');
-        // wikipedia
-        if (document.location.href.includes('wikipedia')) {
-            findColor = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>[^<]*?)(?<=.*?)(\\b(' + color + ')\\b)', 'gi')
+        if (sentColor == 'RGB') {
+            let stylizedSpan = `<span style="color:red;font-weight:bolder;">R</span><span style="color:green;font-weight:bolder;">G</span><span style="color:blue;font-weight:bolder;">B</span>`
+        } else if (sentColor == 'CYMK') {
+            let stylizedSpan = `<span style="color:cyan;font-weight:bolder;">C</span><span style="color:magenta;font-weight:bolder;">M</span><span style="color:gold;font-weight:bolder;">Y</span><span style="color:black;font-weight:bolder;">K</span>`
         }
 
-        para.innerHTML = para.innerHTML.replace(findColor, stylizedSpan)
-
-        // check for RBG string
-    } else if (paraString.includes('RGB')) {
-
-        color = 'RGB'
-
-        // wrap coloring here
-        stylizedSpan = `<span style="color:red;font-weight:bolder;">R</span><span style="color:green;font-weight:bolder;">G</span><span style="color:blue;font-weight:bolder;">B</span>`
+        // baseline regExp
+        sentColor = new RegExp('\\b(' + color + ')\\b', 'gi');
 
 
-        // add color to website HTML
-        findColor = new RegExp('\\b(' + color + ')\\b', 'gi');
-        // wikipedia
-        if (document.location.href.includes('wikipedia')) {
-            findColor = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>[^<]*?)(?<=.*?)(\\b(' + color + ')\\b)', 'gi')
-        }
+        // remove HTML instances
 
-        para.innerHTML = para.innerHTML.replace(findColor, stylizedSpan)
+
+
+        // commit change to website
+        para.innerHTML = para.innerHTML.replace(sentColor, stylizedSpan)
     }
 }
 
