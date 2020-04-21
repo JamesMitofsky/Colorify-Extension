@@ -5,6 +5,7 @@ main()
 
 function main() {
 
+
     // get paragraph and span tags
     var paraTags = document.getElementsByTagName("p");
     // var spanTags = document.getElementsByTagName("span")
@@ -179,10 +180,10 @@ function checkPageForColor(para) {
     }
 
     // handle initialized color formats
-    let colorFormats = ['RGB', 'CMYK', 'rainbow', 'ROYGBIV']
+    let edgeCases = ['RGB', 'CMYK', 'rainbow', 'ROYGBIV']
 
-    for (color of colorFormats) {
-        checkColorFormats(color, para)
+    for (edgeCase of edgeCases) {
+        checkSpecificWords(edgeCase, para)
     }
 
 }
@@ -291,7 +292,7 @@ function checkHTMLMatches(color, cssFormattedColor, htmlMatches) {
 
 
 // checks irregular color formattings
-function checkColorFormats(sentColor, para) {
+function checkSpecificWords(sentColor, para) {
 
     // check cyan, magenta, yellow, and key/black
     if (para.innerText.includes(sentColor)) {
