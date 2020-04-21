@@ -223,7 +223,7 @@ function checkLowerCase(color, para) {
 
 
             // formula for inserting the color change
-            var stylizedWord = `<span style="color:${singularColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;">${color}</span>`
+            var stylizedWord = `<span style="color:${singularColor};font-weight:bolder;">${color}</span>`
                 // if contrast is likely to be low, darken the background
             if (isColorLight(singularColor)) {
                 stylizedWord = `<span style="color:${singularColor};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
@@ -242,33 +242,36 @@ function checkLowerCase(color, para) {
 
             // now, having saved the html values, remove them from the page
             if (htmlMatches) {
-                console.log(htmlMatches)
+                // if there are non-zero # of HTML matches, remove them for the time being
                 para.innerHTML = para.innerHTML.replace(colorInHTML, ' TEMPORARY ');
             }
 
 
 
 
-            // change each occurance of a color's name
+            // find colors located in plain text
             findColor = new RegExp('\\b(' + color + ')\\b', 'gi');
-            para.innerHTML.replace(findColor, stylizedWord);
+            // colorize words by their name, using a span tag
+            para.innerHTML = para.innerHTML.replace(findColor, stylizedWord);
 
 
-            // last occurance of color
-            lastColor = new RegExp(`\\b(${color})\\b(?!.*?(${color}))`, 'gi')
+
 
             // if there were any instances of an HTML color
             if (htmlMatches) {
                 // reintroduce the temporarily removed HTML
                 for (match of htmlMatches) {
 
-                    console.log('last color', lastColor)
+                    // adds blue underlining to indicate these are links
+                    stylizedWord = `<span style="color:${singularColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;">${color}</span>`
 
-                    changedMatch = match.replace(lastColor, stylizedWord)
+                    // find last instance of the color-value
+                    lastColor = new RegExp(`\\b(${color})\\b(?!.*?(${color}))`, 'gi');
+                    // in string format, stylize this last color (aka: the color not wrapped in the HTML tag) within the context of the match
+                    changedMatch = match.replace(lastColor, stylizedWord);
 
-                    console.log('changed match', changedMatch)
-
-                    para.innerHTML = para.innerHTML.replace(' TEMPORARY ', changedMatch)
+                    // send the HTML match back to the website, removing the placeholder text
+                    para.innerHTML = para.innerHTML.replace(' TEMPORARY ', changedMatch);
 
                 }
             }
