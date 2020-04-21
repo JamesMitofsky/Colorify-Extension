@@ -192,6 +192,7 @@ function checkAllWords(sentColor, para) {
 
     // declare different forms
     var cssFormattedColor = sentColor.replace(' ', '').toLowerCase()
+
     var pluralColor = sentColor.toLowerCase().concat("s");
     var singularColor = sentColor.toLowerCase();
     var properCasePluralColor = sentColor.concat("s");
@@ -204,53 +205,54 @@ function checkAllWords(sentColor, para) {
     differentForms.forEach(color => {
 
         // check for a singular color
-        if (para.innerText.includes(color)) {
+        if (!para.innerText.includes(color)) { return }
 
 
-            // baseline formula
-            var stylizedWord = `<span style="color:${cssFormattedColor};font-weight:bolder;">${color}</span>`;
+        // baseline formula
+        var stylizedWord = `<span style="color:${cssFormattedColor};font-weight:bolder;">${color}</span>`;
 
-            // if contrast is likely to be low, darken the background
-            if (isColorLight(cssFormattedColor)) {
-                // includes dark background
-                stylizedWord = `<span style="color:${cssFormattedColor};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
-            }
-
-            // catch the color yellow
-            if (cssFormattedColor == "yellow") {
-                stylizedWord = `<span style="color:gold;font-weight:bolder;">${color}</span>`
-            }
-
-            // remove any color-keyword sensetive HTML
-            let htmlMatches = attemptHTMLRemoval(color, para)
-
-
-            // find colors located in plain text
-            findColor = new RegExp('\\b(' + color + ')\\b', 'g');
-            // colorize words by their name, using a span tag
-            para.innerHTML = para.innerHTML.replace(findColor, stylizedWord);
-
-
-            // if no HTML had to be removed, there's nothing more to do
-            if (!htmlMatches) { return }
-
-            // if HTML was removed, let's add it back in
-            let temporaryValue = 'colorizing'
-            checkHTMLMatches(color, cssFormattedColor, htmlMatches, temporaryValue)
-
-
-
-
-
-
+        // if contrast is likely to be low, darken the background
+        if (isColorLight(cssFormattedColor)) {
+            // includes dark background
+            stylizedWord = `<span style="color:${cssFormattedColor};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
         }
+
+        // catch the color yellow
+        if (cssFormattedColor == "yellow") {
+            stylizedWord = `<span style="color:gold;font-weight:bolder;">${color}</span>`
+        }
+
+        // remove any color-keyword sensetive HTML, using a placeholder value to find later
+        let temporaryValue = ' colorizing '
+        let htmlMatches = attemptHTMLRemoval(color, para, temporaryValue)
+
+
+        // find colors located in plain text
+        findColor = new RegExp('\\b(' + color + ')\\b', 'g');
+        // colorize words by their name, using a span tag
+        para.innerHTML = para.innerHTML.replace(findColor, stylizedWord);
+
+
+        // if no HTML had to be removed, there's nothing more to do
+        if (!htmlMatches) { return }
+
+        // if HTML was removed, let's add it back in
+        // let temporaryValue = 'colorizing'
+        checkHTMLMatches(color, cssFormattedColor, htmlMatches, temporaryValue)
+
+
+
+
+
+
+
     })
 
 
 }
 
 // returns any matches
-function attemptHTMLRemoval(color, para) {
+function attemptHTMLRemoval(color, para, temporaryValue) {
     // finds only the first half of an HTML element declaration, checking if the keyword is in it, making it susceptible to unwanted changes
     var colorInHTML = new RegExp('(<[^<]*?(' + color + ')[^<]*?>.*?(' + color + ').*?<\/[^<>]*?>)', 'g');
 
@@ -259,9 +261,9 @@ function attemptHTMLRemoval(color, para) {
 
     if (htmlMatches) {
         // if there are non-zero # of HTML matches, remove them for the time being
-        para.innerHTML = para.innerHTML.replace(colorInHTML, ' TEMPORARY ');
+        para.innerHTML = para.innerHTML.replace(colorInHTML, temporaryValue);
         console.log('match changed to temporary')
-        
+
     }
 
     return htmlMatches
@@ -310,7 +312,8 @@ function checkSpecificInstances(sentColor, para) {
 
 
         // remove any color-keyword sensetive HTML
-        let htmlMatches = attemptHTMLRemoval(sentColor, para)
+        let temporaryValue = ' colorizing '
+        let htmlMatches = attemptHTMLRemoval(sentColor, para, temporaryValue)
 
         console.log('matches', htmlMatches)
 
@@ -331,19 +334,20 @@ function checkSpecificInstances(sentColor, para) {
             let changedMatch = match.replace(lastColor, stylizedSpan);
 
             // send the HTML string back to the website, replacing the placeholder text
-            para.innerHTML = para.innerHTML.replace(' TEMPORARY ', changedMatch);
+
+            para.innerHTML = para.innerHTML.replace(temporaryValue, changedMatch);
         }
     }
 }
 
 // determines if dark background is needed
-function isColorLight(color) {
+function isColorLight(cssColor) {
     // these colors will be specially given black backgrounds; use sparingly
-    const lightColors = ["white", "azure", "Azure", "White"]
+    const lightColors = ["white", "azure"]
 
     // test if the current color is light
     let activeLightColor = lightColors.some(testingColor => {
-        return testingColor == color
+        return testingColor == cssColor
     })
 
     // send back out of function
