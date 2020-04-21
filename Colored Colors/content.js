@@ -1,5 +1,5 @@
 // TODO:
-// Fix color formats function, making it non-specific to wiki like the main character cases function
+// Make it so more complex cssColors can be recognized (this may be as simple as adding spaces to the array items)
 
 main()
 
@@ -179,7 +179,7 @@ function checkPageForColor(para) {
     }
 
     // handle initialized color formats
-    let colorFormats = ['RGB', 'CYMK']
+    let colorFormats = ['RGB', 'CMYK']
 
     for (color of colorFormats) {
         checkColorFormats(color, para)
@@ -191,10 +191,13 @@ function checkPageForColor(para) {
 function checkAllCases(sentColor, para) {
 
     // declare different forms
+    var cssFormattedColor = sentColor.replace(' ', '').toLowerCase()
     var pluralColor = sentColor.toLowerCase().concat("s");
     var singularColor = sentColor.toLowerCase();
     var properCasePluralColor = sentColor.concat("s");
     var properCaseColor = sentColor
+
+    console.log(cssFormattedColor)
 
     // list plurals first, ensuring the shorter singulars don't negate them
     var differentForms = [pluralColor, singularColor, properCasePluralColor, properCaseColor];
@@ -206,16 +209,16 @@ function checkAllCases(sentColor, para) {
 
 
             // baseline formula
-            var stylizedWord = `<span style="color:${singularColor};font-weight:bolder;">${color}</span>`;
+            var stylizedWord = `<span style="color:${cssFormattedColor};font-weight:bolder;">${color}</span>`;
 
             // if contrast is likely to be low, darken the background
-            if (isColorLight(singularColor)) {
+            if (isColorLight(cssFormattedColor)) {
                 // includes dark background
-                stylizedWord = `<span style="color:${singularColor};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
+                stylizedWord = `<span style="color:${cssFormattedColor};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
             }
 
             // catch the color yellow
-            if (singularColor == "yellow") {
+            if (cssFormattedColor == "yellow") {
                 stylizedWord = `<span style="color:gold;font-weight:bolder;">${color}</span>`
             }
 
@@ -233,7 +236,7 @@ function checkAllCases(sentColor, para) {
             if (!htmlMatches) { return }
 
             // if HTML was removed, let's add it back in
-            checkHTMLMatches(color, singularColor, htmlMatches)
+            checkHTMLMatches(color, cssFormattedColor, htmlMatches)
 
 
 
@@ -262,17 +265,17 @@ function attemptHTMLRemoval(color, para) {
     return htmlMatches
 }
 
-function checkHTMLMatches(color, singularColor, htmlMatches) {
+function checkHTMLMatches(color, cssFormattedColor, htmlMatches) {
     // reformat all HTML strings
     for (match of htmlMatches) {
 
         // nuance styles to match situation
-        if (isColorLight(singularColor)) {
+        if (isColorLight(cssFormattedColor)) {
             var darkBackground = 'background-color:black;padding:0 3px;border-radius:3px;'
         }
 
         // final stylized product
-        let stylizedWord = `<span style="color:${singularColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;${darkBackground}">${color}</span>`
+        let stylizedWord = `<span style="color:${cssFormattedColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;${darkBackground}">${color}</span>`
 
         // find last instance of the color-value (looks ahead, validating there are no other encounters with the keyword, not checking for word breaks since we can be more flexible in our rejection criteria)
         let lastColor = new RegExp(`\\b(${color})\\b(?!.*?(${color}))`, 'g');
@@ -295,7 +298,7 @@ function checkColorFormats(sentColor, para) {
 
         if (sentColor == 'RGB') {
             stylizedSpan = `<span style="color:red;font-weight:bolder;">R</span><span style="color:green;font-weight:bolder;">G</span><span style="color:blue;font-weight:bolder;">B</span>`
-        } else if (sentColor == 'CYMK') {
+        } else if (sentColor == 'CMYK') {
             stylizedSpan = `<span style="color:cyan;font-weight:bolder;">C</span><span style="color:magenta;font-weight:bolder;">M</span><span style="color:gold;font-weight:bolder;">Y</span><span style="color:black;font-weight:bolder;">K</span>`
         } else { return }
 
