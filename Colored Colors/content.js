@@ -6,8 +6,8 @@ main()
 function main() {
 
     // get paragraph and span tags
-    var paraTags = document.getElementsByTagName("p")
-    var spanTags = document.getElementsByTagName("span")
+    var paraTags = document.getElementsByTagName("p");
+    // var spanTags = document.getElementsByTagName("span")
 
     //check every para tag
     for (para of paraTags) {
@@ -197,11 +197,11 @@ function checkPageForColor(para) {
         // Lower case is looking primo rn
         checkLowerCase(color, para)
 
-        checkProperCase(color, para)
+        // checkProperCase(color, para)
     }
 
     // handle initialized color formats
-    checkColorFormats(para)
+    // checkColorFormats(para)
 
 
 }
@@ -214,38 +214,66 @@ function checkLowerCase(color, para) {
     var pluralColor = color.toLowerCase().concat("s")
 
     // merge into array
-    singularAndPlural = [singularColor, pluralColor]
-        // then attempt to change the color of all matching strings
-    singularAndPlural.forEach(color => {
+    var pluralAndSingular = [pluralColor, singularColor];
+    // check plural first, since checking singular 1st would eliminate all instances of plural
+    pluralAndSingular.forEach(color => {
 
         // check for a singular color
         if (para.innerText.includes(color)) {
 
 
             // formula for inserting the color change
-            var stylizedWord = `<span style="color:${singularColor};font-weight:bolder;">${color}</span>`
-
-            // if contrast is likely to be low, darken the background
+            var stylizedWord = `<span style="color:${singularColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;">${color}</span>`
+                // if contrast is likely to be low, darken the background
             if (isColorLight(singularColor)) {
                 stylizedWord = `<span style="color:${singularColor};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
             }
-
             // catch the color yellow
             if (color == "yellow" || color == "yellows") {
                 stylizedWord = `<span style="color:gold;font-weight:bolder;">${color}</span>`
             }
 
+            // finds only the first half of an HTML element declaration
+            var colorInHTML = new RegExp('(<[^<]*?(' + color + ')[^<]*?>.*?(' + color + ').*?<\/[^<>]*?>)', 'gi');
+            // record html strings for to be injected later
+            var htmlMatches = para.innerHTML.match(colorInHTML);
 
 
-            // add color to website HTML
-            findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
 
-            // wiki
-            if (document.location.href.includes('wikipedia')) {
-                findColor = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>[^<]*?)(?<=.*?)(\\b(' + color + ')\\b)', 'gi')
+            // now, having saved the html values, remove them from the page
+            if (htmlMatches) {
+                console.log(htmlMatches)
+                para.innerHTML = para.innerHTML.replace(colorInHTML, ' TEMPORARY ');
             }
 
-            para.innerHTML = para.innerHTML.replace(findColor, stylizedWord)
+
+
+
+            // change each occurance of a color's name
+            findColor = new RegExp('\\b(' + color + ')\\b', 'gi');
+            para.innerHTML.replace(findColor, stylizedWord);
+
+
+            // last occurance of color
+            lastColor = new RegExp(`\\b(${color})\\b(?!.*?(${color}))`, 'gi')
+
+            // if there were any instances of an HTML color
+            if (htmlMatches) {
+                // reintroduce the temporarily removed HTML
+                for (match of htmlMatches) {
+
+                    console.log('last color', lastColor)
+
+                    changedMatch = match.replace(lastColor, stylizedWord)
+
+                    console.log('changed match', changedMatch)
+
+                    para.innerHTML = para.innerHTML.replace(' TEMPORARY ', changedMatch)
+
+                }
+            }
+
+
 
         }
     })
@@ -294,13 +322,14 @@ function checkColorFormats(para, findColor) {
     // check cyan, magenta, yellow, and key/black
     if (paraString.includes('CMYK')) {
 
+        color = 'CMYK'
+
         // wrap coloring here
         stylizedSpan = `<span style="color:cyan;font-weight:bolder;">C</span><span style="color:magenta;font-weight:bolder;">M</span><span style="color:gold;font-weight:bolder;">Y</span><span style="color:black;font-weight:bolder;">K</span>`
 
         // add color to website HTML
-        findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
-
-
+        findColor = new RegExp('\\b(' + color + ')\\b', 'gi');
+        // wikipedia
         if (document.location.href.includes('wikipedia')) {
             findColor = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>[^<]*?)(?<=.*?)(\\b(' + color + ')\\b)', 'gi')
         }
@@ -309,15 +338,16 @@ function checkColorFormats(para, findColor) {
 
         // check for RBG string
     } else if (paraString.includes('RGB')) {
-        newExp = new RegExp('(?<=<[^<]*?(' + 'RGB' + ')[^<]*?>)(\\b(' + 'RGB' + ')\\b)', 'gi')
+
+        color = 'RGB'
 
         // wrap coloring here
         stylizedSpan = `<span style="color:red;font-weight:bolder;">R</span><span style="color:green;font-weight:bolder;">G</span><span style="color:blue;font-weight:bolder;">B</span>`
 
 
         // add color to website HTML
-        findColor = new RegExp('\\b(' + color + ')\\b', 'gi')
-
+        findColor = new RegExp('\\b(' + color + ')\\b', 'gi');
+        // wikipedia
         if (document.location.href.includes('wikipedia')) {
             findColor = new RegExp('(?<=<[^<]*?(' + color + ')[^<]*?>[^<]*?)(?<=.*?)(\\b(' + color + ')\\b)', 'gi')
         }
