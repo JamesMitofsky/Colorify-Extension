@@ -175,21 +175,20 @@ function checkPageForColor(para) {
     // check all colors
     for (color of cssColors) {
         // lower and proper case checks for singular and plural forms
-        checkAllCases(color, para)
-
+        checkAllWords(color, para)
     }
 
     // handle initialized color formats
     let edgeCases = ['RGB', 'CMYK', 'rainbow', 'ROYGBIV']
 
     for (edgeCase of edgeCases) {
-        checkSpecificWords(edgeCase, para)
+        checkSpecificInstances(edgeCase, para)
     }
 
 }
 
 
-function checkAllCases(sentColor, para) {
+function checkAllWords(sentColor, para) {
 
     // declare different forms
     var cssFormattedColor = sentColor.replace(' ', '').toLowerCase()
@@ -198,7 +197,6 @@ function checkAllCases(sentColor, para) {
     var properCasePluralColor = sentColor.concat("s");
     var properCaseColor = sentColor
 
-    console.log(cssFormattedColor)
 
     // list plurals first, ensuring the shorter singulars don't negate them
     var differentForms = [pluralColor, singularColor, properCasePluralColor, properCaseColor];
@@ -237,7 +235,8 @@ function checkAllCases(sentColor, para) {
             if (!htmlMatches) { return }
 
             // if HTML was removed, let's add it back in
-            checkHTMLMatches(color, cssFormattedColor, htmlMatches)
+            let temporaryValue = 'colorizing'
+            checkHTMLMatches(color, cssFormattedColor, htmlMatches, temporaryValue)
 
 
 
@@ -261,12 +260,14 @@ function attemptHTMLRemoval(color, para) {
     if (htmlMatches) {
         // if there are non-zero # of HTML matches, remove them for the time being
         para.innerHTML = para.innerHTML.replace(colorInHTML, ' TEMPORARY ');
+        console.log('match changed to temporary')
+        
     }
 
     return htmlMatches
 }
 
-function checkHTMLMatches(color, cssFormattedColor, htmlMatches) {
+function checkHTMLMatches(color, cssFormattedColor, htmlMatches, temporaryValue) {
     // reformat all HTML strings
     for (match of htmlMatches) {
 
@@ -285,14 +286,14 @@ function checkHTMLMatches(color, cssFormattedColor, htmlMatches) {
         let changedMatch = match.replace(lastColor, stylizedWord);
 
         // send the HTML string back to the website, replacing the placeholder text
-        para.innerHTML = para.innerHTML.replace(' TEMPORARY ', changedMatch);
+        para.innerHTML = para.innerHTML.replace(temporaryValue, changedMatch);
 
     }
 }
 
 
 // checks irregular color formattings
-function checkSpecificWords(sentColor, para) {
+function checkSpecificInstances(sentColor, para) {
 
     // check cyan, magenta, yellow, and key/black
     if (para.innerText.includes(sentColor)) {
@@ -323,8 +324,7 @@ function checkSpecificWords(sentColor, para) {
         if (!htmlMatches) { return }
 
         for (match of htmlMatches) {
-            console.log('checking html\n\n', stylizedSpan)
-                // last instance of the format
+            // last instance of the format
             let lastColor = new RegExp(`\\b(${sentColor})\\b(?!.*?(${sentColor}))`, 'g');
 
             // stylize the color right before the HTML tag closes
