@@ -1,5 +1,6 @@
 // TODO:
 // Make it so more complex cssColors can be recognized (this may be as simple as adding spaces to the array items)
+// deal with the "blue" wiki page
 
 main()
 
