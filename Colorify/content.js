@@ -215,7 +215,7 @@ function checkAllWords(sentColor, para) {
         // if contrast is likely to be low, darken the background
         if (isColorLight(cssFormattedColor)) {
             // includes dark background
-            stylizedWord = `<span style="color:${cssFormattedColor};font-weight:bolder;background-color:black;padding:0 3px;border-radius:3px;">${color}</span>`
+            stylizedWord = `<span style="color:${cssFormattedColor};font-weight:bolder;text-shadow: 0 0 6px black;">${color}</span>`
         }
 
         // catch the color yellow
@@ -276,7 +276,7 @@ function checkHTMLMatches(color, cssFormattedColor, htmlMatches, temporaryValue)
 
         // nuance styles to match situation
         if (isColorLight(cssFormattedColor)) {
-            var darkBackground = 'background-color:black;padding:0 3px;border-radius:3px;'
+            var darkBackground = 'text-shadow: 0 0 6px black;'
         }
 
         // final stylized product
