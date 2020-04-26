@@ -6,12 +6,14 @@ main()
 
 function main() {
 
+    // testing spans, which aren't working - probably because inserted spans are being checked
+    var spanTags = document.getElementsByTagName("span")
+    for (span of spanTags) {
+        checkPageForColor(span)
+    }
 
     // get paragraph and span tags
     var paraTags = document.getElementsByTagName("p");
-    // var spanTags = document.getElementsByTagName("span")
-
-    //check every para tag
     for (para of paraTags) {
         checkPageForColor(para)
     }
@@ -210,17 +212,17 @@ function checkAllWords(sentColor, para) {
 
 
         // baseline formula
-        var stylizedWord = `<span style="color:${cssFormattedColor};font-weight:bolder;">${color}</span>`;
+        var stylizedWord = `<ins style="color:${cssFormattedColor};font-weight:bolder;">${color}</ins>`;
 
         // if contrast is likely to be low, darken the background
         if (isColorLight(cssFormattedColor)) {
             // includes dark background
-            stylizedWord = `<span style="color:${cssFormattedColor};font-weight:bolder;text-shadow: 0 0 6px black;">${color}</span>`
+            stylizedWord = `<ins style="color:${cssFormattedColor};font-weight:bolder;text-shadow: 0 0 6px black;">${color}</ins>`
         }
 
         // catch the color yellow
         if (cssFormattedColor == "yellow") {
-            stylizedWord = `<span style="color:gold;font-weight:bolder;">${color}</span>`
+            stylizedWord = `<ins style="color:gold;font-weight:bolder;">${color}</ins>`
         }
 
         // remove any color-keyword sensetive HTML, using a placeholder value to find later
@@ -239,7 +241,7 @@ function checkAllWords(sentColor, para) {
 
         // if HTML was removed, let's add it back in
         // let temporaryValue = 'colorizing'
-        checkHTMLMatches(color, cssFormattedColor, htmlMatches, temporaryValue)
+        checkHTMLMatches(color, cssFormattedColor, htmlMatches, temporaryValue, para)
 
 
 
@@ -270,7 +272,7 @@ function attemptHTMLRemoval(color, para, temporaryValue) {
     return htmlMatches
 }
 
-function checkHTMLMatches(color, cssFormattedColor, htmlMatches, temporaryValue) {
+function checkHTMLMatches(color, cssFormattedColor, htmlMatches, temporaryValue, para) {
     // reformat all HTML strings
     for (match of htmlMatches) {
 
@@ -280,7 +282,7 @@ function checkHTMLMatches(color, cssFormattedColor, htmlMatches, temporaryValue)
         }
 
         // final stylized product
-        let stylizedWord = `<span style="color:${cssFormattedColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;${darkBackground}">${color}</span>`
+        let stylizedWord = `<ins style="color:${cssFormattedColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;${darkBackground}">${color}</ins>`
 
         // find last instance of the color-value (looks ahead, validating there are no other encounters with the keyword, not checking for word breaks since we can be more flexible in our rejection criteria)
         let lastColor = new RegExp(`\\b(${color})\\b(?!.*?(${color}))`, 'g');
@@ -302,13 +304,13 @@ function checkSpecificInstances(sentColor, para) {
     if (para.innerText.includes(sentColor)) {
 
         if (sentColor == 'RGB') {
-            stylizedSpan = `<span style="color:red;font-weight:bolder;">R</span><span style="color:green;font-weight:bolder;">G</span><span style="color:blue;font-weight:bolder;">B</span>`
+            stylizedSpan = `<ins style="color:red;font-weight:bolder;">R</ins><ins style="color:green;font-weight:bolder;">G</ins><ins style="color:blue;font-weight:bolder;">B</ins>`
         } else if (sentColor == 'CMYK') {
-            stylizedSpan = `<span style="color:cyan;font-weight:bolder;">C</span><span style="color:magenta;font-weight:bolder;">M</span><span style="color:gold;font-weight:bolder;">Y</span><span style="color:black;font-weight:bolder;">K</span>`
+            stylizedSpan = `<ins style="color:cyan;font-weight:bolder;">C</ins><ins style="color:magenta;font-weight:bolder;">M</ins><ins style="color:gold;font-weight:bolder;">Y</ins><ins style="color:black;font-weight:bolder;">K</ins>`
         } else if (sentColor == 'rainbow') {
-            stylizedSpan = '<span style="color:red;font-weight:bolder;">r</span><span style="color:orange;font-weight:bolder;">a</span><span style="color:gold;font-weight:bolder;">i</span><span style="color:green;font-weight:bolder;">n</span><span style="color:blue;font-weight:bolder;">b</span><span style="color:indigo;font-weight:bolder;">o</span><span style="color:violet;font-weight:bolder;">w</span>'
+            stylizedSpan = '<ins style="color:red;font-weight:bolder;">r</ins><ins style="color:orange;font-weight:bolder;">a</ins><ins style="color:gold;font-weight:bolder;">i</ins><ins style="color:green;font-weight:bolder;">n</ins><ins style="color:blue;font-weight:bolder;">b</ins><ins style="color:indigo;font-weight:bolder;">o</ins><ins style="color:violet;font-weight:bolder;">w</ins>'
         } else if (sentColor == 'ROYGBIV') {
-            stylizedSpan = '<span style="color:red;font-weight:bolder;">R</span><span style="color:orange;font-weight:bolder;">O</span><span style="color:gold;font-weight:bolder;">Y</span><span style="color:green;font-weight:bolder;">G</span><span style="color:blue;font-weight:bolder;">B</span><span style="color:indigo;font-weight:bolder;">I</span><span style="color:violet;font-weight:bolder;">V</span>'
+            stylizedSpan = '<ins style="color:red;font-weight:bolder;">R</ins><ins style="color:orange;font-weight:bolder;">O</ins><ins style="color:gold;font-weight:bolder;">Y</ins><ins style="color:green;font-weight:bolder;">G</ins><ins style="color:blue;font-weight:bolder;">B</ins><ins style="color:indigo;font-weight:bolder;">I</ins><ins style="color:violet;font-weight:bolder;">V</ins>'
         } else { return }
 
 
