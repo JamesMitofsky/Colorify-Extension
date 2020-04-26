@@ -212,17 +212,17 @@ function checkAllWords(sentColor, para) {
 
 
         // baseline formula
-        var stylizedWord = `<ins style="color:${cssFormattedColor};font-weight:bolder;">${color}</ins>`;
+        var stylizedWord = `<ins style="text-decoration:none;color:${cssFormattedColor};font-weight:bolder;">${color}</ins>`;
 
         // if contrast is likely to be low, darken the background
         if (isColorLight(cssFormattedColor)) {
             // includes dark background
-            stylizedWord = `<ins style="color:${cssFormattedColor};font-weight:bolder;text-shadow: 0 0 6px black;">${color}</ins>`
+            stylizedWord = `<ins style="text-decoration:none;color:${cssFormattedColor};font-weight:bolder;text-shadow: 0 0 6px black;">${color}</ins>`
         }
 
         // catch the color yellow
         if (cssFormattedColor == "yellow") {
-            stylizedWord = `<ins style="color:gold;font-weight:bolder;">${color}</ins>`
+            stylizedWord = `<ins style="text-decoration:none;color:gold;font-weight:bolder;">${color}</ins>`
         }
 
         // remove any color-keyword sensetive HTML, using a placeholder value to find later
@@ -282,7 +282,7 @@ function checkHTMLMatches(color, cssFormattedColor, htmlMatches, temporaryValue,
         }
 
         // final stylized product
-        let stylizedWord = `<ins style="color:${cssFormattedColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;${darkBackground}">${color}</ins>`
+        let stylizedWord = `<ins style="text-decoration:none;color:${cssFormattedColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;${darkBackground}">${color}</ins>`
 
         // find last instance of the color-value (looks ahead, validating there are no other encounters with the keyword, not checking for word breaks since we can be more flexible in our rejection criteria)
         let lastColor = new RegExp(`\\b(${color})\\b(?!.*?(${color}))`, 'g');
@@ -304,13 +304,13 @@ function checkSpecificInstances(sentColor, para) {
     if (para.innerText.includes(sentColor)) {
 
         if (sentColor == 'RGB') {
-            stylizedSpan = `<ins style="color:red;font-weight:bolder;">R</ins><ins style="color:green;font-weight:bolder;">G</ins><ins style="color:blue;font-weight:bolder;">B</ins>`
+            stylizedSpan = `<ins style="text-decoration:none;color:red;font-weight:bolder;">R</ins><ins style="text-decoration:none;color:green;font-weight:bolder;">G</ins><ins style="text-decoration:none;color:blue;font-weight:bolder;">B</ins>`
         } else if (sentColor == 'CMYK') {
-            stylizedSpan = `<ins style="color:cyan;font-weight:bolder;">C</ins><ins style="color:magenta;font-weight:bolder;">M</ins><ins style="color:gold;font-weight:bolder;">Y</ins><ins style="color:black;font-weight:bolder;">K</ins>`
+            stylizedSpan = `<ins style="text-decoration:none;color:cyan;font-weight:bolder;">C</ins><ins style="text-decoration:none;color:magenta;font-weight:bolder;">M</ins><ins style="text-decoration:none;color:gold;font-weight:bolder;">Y</ins><ins style="text-decoration:none;color:black;font-weight:bolder;">K</ins>`
         } else if (sentColor == 'rainbow') {
-            stylizedSpan = '<ins style="color:red;font-weight:bolder;">r</ins><ins style="color:orange;font-weight:bolder;">a</ins><ins style="color:gold;font-weight:bolder;">i</ins><ins style="color:green;font-weight:bolder;">n</ins><ins style="color:blue;font-weight:bolder;">b</ins><ins style="color:indigo;font-weight:bolder;">o</ins><ins style="color:violet;font-weight:bolder;">w</ins>'
+            stylizedSpan = '<ins style="text-decoration:none;color:red;font-weight:bolder;">r</ins><ins style="text-decoration:none;color:orange;font-weight:bolder;">a</ins><ins style="text-decoration:none;color:gold;font-weight:bolder;">i</ins><ins style="text-decoration:none;color:green;font-weight:bolder;">n</ins><ins style="text-decoration:none;color:blue;font-weight:bolder;">b</ins><ins style="text-decoration:none;color:indigo;font-weight:bolder;">o</ins><ins style="text-decoration:none;color:violet;font-weight:bolder;">w</ins>'
         } else if (sentColor == 'ROYGBIV') {
-            stylizedSpan = '<ins style="color:red;font-weight:bolder;">R</ins><ins style="color:orange;font-weight:bolder;">O</ins><ins style="color:gold;font-weight:bolder;">Y</ins><ins style="color:green;font-weight:bolder;">G</ins><ins style="color:blue;font-weight:bolder;">B</ins><ins style="color:indigo;font-weight:bolder;">I</ins><ins style="color:violet;font-weight:bolder;">V</ins>'
+            stylizedSpan = '<ins style="text-decoration:none;color:red;font-weight:bolder;">R</ins><ins style="text-decoration:none;color:orange;font-weight:bolder;">O</ins><ins style="text-decoration:none;color:gold;font-weight:bolder;">Y</ins><ins style="text-decoration:none;color:green;font-weight:bolder;">G</ins><ins style="text-decoration:none;color:blue;font-weight:bolder;">B</ins><ins style="text-decoration:none;color:indigo;font-weight:bolder;">I</ins><ins style="text-decoration:none;color:violet;font-weight:bolder;">V</ins>'
         } else { return }
 
 
