@@ -83,7 +83,7 @@ function checkPageForColor(para) {
     }
 
     // handle initialized color formats
-    let edgeCases = ['RGB', 'CMYK', 'rainbow', 'ROYGBIV', 'UVM', 'University of Vermont']
+    let edgeCases = ['RGB', 'CMYK', 'rainbow', 'Rainbow', 'ROYGBIV', 'UVM', 'University of Vermont']
 
     for (edgeCase of edgeCases) {
         checkSpecificInstances(edgeCase, para)
@@ -210,6 +210,8 @@ function checkSpecificInstances(sentColor, para) {
             stylizedSpan = `<ins style="text-decoration:none;color:cyan;font-weight:bolder;">C</ins><ins style="text-decoration:none;color:magenta;font-weight:bolder;">M</ins><ins style="text-decoration:none;color:gold;font-weight:bolder;">Y</ins><ins style="text-decoration:none;color:black;font-weight:bolder;">K</ins>`
         } else if (sentColor == 'rainbow') {
             stylizedSpan = '<ins style="text-decoration:none;color:red;font-weight:bolder;">r</ins><ins style="text-decoration:none;color:orange;font-weight:bolder;">a</ins><ins style="text-decoration:none;color:gold;font-weight:bolder;">i</ins><ins style="text-decoration:none;color:green;font-weight:bolder;">n</ins><ins style="text-decoration:none;color:blue;font-weight:bolder;">b</ins><ins style="text-decoration:none;color:indigo;font-weight:bolder;">o</ins><ins style="text-decoration:none;color:violet;font-weight:bolder;">w</ins>'
+        } else if (sentColor == 'Rainbow') {
+            stylizedSpan = '<ins style="text-decoration:none;color:red;font-weight:bolder;">R</ins><ins style="text-decoration:none;color:orange;font-weight:bolder;">a</ins><ins style="text-decoration:none;color:gold;font-weight:bolder;">i</ins><ins style="text-decoration:none;color:green;font-weight:bolder;">n</ins><ins style="text-decoration:none;color:blue;font-weight:bolder;">b</ins><ins style="text-decoration:none;color:indigo;font-weight:bolder;">o</ins><ins style="text-decoration:none;color:violet;font-weight:bolder;">w</ins>'
         } else if (sentColor == 'ROYGBIV') {
             stylizedSpan = '<ins style="text-decoration:none;color:red;font-weight:bolder;">R</ins><ins style="text-decoration:none;color:orange;font-weight:bolder;">O</ins><ins style="text-decoration:none;color:gold;font-weight:bolder;">Y</ins><ins style="text-decoration:none;color:green;font-weight:bolder;">G</ins><ins style="text-decoration:none;color:blue;font-weight:bolder;">B</ins><ins style="text-decoration:none;color:indigo;font-weight:bolder;">I</ins><ins style="text-decoration:none;color:violet;font-weight:bolder;">V</ins>'
         } else if (sentColor == 'UVM') {
