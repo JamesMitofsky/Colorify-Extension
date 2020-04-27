@@ -36,7 +36,6 @@ function checkPageForColor(para) {
         "Chartreuse",
         "Chocolate",
         "Coral",
-        "Cornsilk",
         "Crimson",
         "Cyan",
         "Gold",
@@ -118,7 +117,7 @@ function checkAllWords(sentColor, para) {
         // if contrast is likely to be low, darken the background
         if (isColorLight(cssFormattedColor)) {
             // includes dark background
-            stylizedWord = `<ins style="text-decoration:none;color:${cssFormattedColor};font-weight:bolder;text-shadow: 0 0 6px black;">${color}</ins>`
+            stylizedWord = `<ins style="text-decoration:none;color:${cssFormattedColor};font-weight:bolder;text-shadow: 0 0 2px black;">${color}</ins>`
         }
 
         // catch the color yellow
@@ -179,11 +178,12 @@ function checkHTMLMatches(color, cssFormattedColor, htmlMatches, temporaryValue,
 
         // nuance styles to match situation
         if (isColorLight(cssFormattedColor)) {
-            var darkBackground = 'text-shadow: 0 0 6px black;'
+            var darkBackground = 'text-shadow: 0 0 2px black;'
         }
 
-        // final stylized product
-        let stylizedWord = `<ins style="text-decoration:none;color:${cssFormattedColor};font-weight:bolder;text-decoration:underline;text-decoration-color:blue;${darkBackground}">${color}</ins>`
+        // stylize finished end product
+        // TODO: something weird is happening during the loops. You can see it if you add unique styles here. Words are getting double wrapped.
+        let stylizedWord = `<ins style="text-decoration:none;color:${cssFormattedColor};font-weight:bolder;${darkBackground}">${color}</ins>`
 
         // find last instance of the color-value (looks ahead, validating there are no other encounters with the keyword, not checking for word breaks since we can be more flexible in our rejection criteria)
         let lastColor = new RegExp(`\\b(${color})\\b(?!.*?(${color}))`, 'g');
@@ -253,7 +253,7 @@ function checkSpecificInstances(sentColor, para) {
 // determines if dark background is needed
 function isColorLight(cssColor) {
     // these colors will be specially given black backgrounds; use sparingly
-    const lightColors = ["white", "azure"]
+    const lightColors = ["white", "azure", "ivory", "linen", "lavender", "moccasin", "snow"]
 
     // test if the current color is light
     let activeLightColor = lightColors.some(testingColor => {
