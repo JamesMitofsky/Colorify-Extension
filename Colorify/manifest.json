@@ -14,7 +14,7 @@
             "<all_urls>"
         ],
         "js": [
-            "minified.js"
+            "content.js"
         ]
     }],
     "browser_action": {
