@@ -253,7 +253,7 @@ function checkSpecificInstances(sentColor, para) {
 // determines if dark background is needed
 function isColorLight(cssColor) {
     // these colors will be specially given black backgrounds; use sparingly
-    const lightColors = ["white", "azure", "ivory", "linen", "lavender", "moccasin", "snow"]
+    const lightColors = ["white","whites", "azure","azures", "ivory", "ivories", "linen", "linens", "lavender", "lavenders", "moccasin", "moccasins", "snow", "snows"]
 
     // test if the current color is light
     let activeLightColor = lightColors.some(testingColor => {
