@@ -6,6 +6,9 @@ main()
 
 function main() {
 
+    // prevents load on Google Docs
+    if (window.location.href.includes('docs.google')) { return }
+
     // testing spans, which aren't working - probably because inserted spans are being checked
     var spanTags = document.getElementsByTagName("span")
     for (span of spanTags) {
