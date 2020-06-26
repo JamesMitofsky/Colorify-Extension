@@ -14,7 +14,8 @@
             "<all_urls>"
         ],
         "js": [
-            "content.js"
+            "mark.min.js",
+            "testing.js"
         ]
     }],
     "browser_action": {
