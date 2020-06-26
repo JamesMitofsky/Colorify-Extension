@@ -5,72 +5,37 @@
 
 main()
 
-function main() {
+async function main() {
 
     // search every element for text highlighting
     var instance = new Mark(document.querySelector("body"));
 
-    let cssColors = [
-        "Aqua",
-        "Aquamarine",
-        "Azure",
-        "Beige",
-        "Bisque",
-        "Black",
-        "Blue",
-        "Brown",
-        "Chartreuse",
-        "Chocolate",
-        "Coral",
-        "Crimson",
-        "Cyan",
-        "Gold",
-        "Gray",
-        "Grey",
-        "Green",
-        "Indigo",
-        "Ivory",
-        "Khaki",
-        "Lavender",
-        "Lime",
-        "Linen",
-        "Magenta",
-        "Maroon",
-        "Moccasin",
-        "Navy",
-        "Olive",
-        "Orange",
-        "Orchid",
-        "Peru",
-        "Pink",
-        "Plum",
-        "Purple",
-        "Red",
-        "Salmon",
-        "Sienna",
-        "Silver",
-        "Snow",
-        "Tan",
-        "Teal",
-        "Thistle",
-        "Tomato",
-        "Turquoise",
-        "Violet",
-        "Wheat",
-        "White",
-        "Yellow",
-    ]
+    let colorsObj = await loadColors()
+
+
+    let cssColors = colorsObj.colors
+
+    
 
     // check every color
     cssColors.forEach(color => {
 
         let options = {
+
+            // ignore partial matches
             "accuracy": "exactly",
+
+            // override mark default to prevent browser applying styles
             "element": "span",
+
+            // set style param for all matches
             "each": (el) => {
                 el.style.color = color
                 el.style.fontWeight = "bolder"
-            }
+            },
+
+            // catch all links and their children
+            "exclude": ["a", "a *"]
         }
 
 
@@ -87,3 +52,10 @@ function main() {
 
 
 
+async function loadColors() {
+    const url = chrome.runtime.getURL('data/colors.json');
+     let response = await fetch(url)
+     let json = await response.json()
+
+     return json
+}
