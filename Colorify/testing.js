@@ -1,31 +1,26 @@
-// grab colors from json file
-
-
-
 
 main()
 
 async function main() {
 
-    // search every element for text highlighting
+    // declare searching every element
     var instance = new Mark(document.querySelector("body"));
 
+
+    // load every color
     let colorsObj = await loadColors()
-
-
     let cssColors = colorsObj.colors
 
-    
 
     // check every color
     cssColors.forEach(color => {
 
+        // set options for mark search
         let options = {
-
             // ignore partial matches
             "accuracy": "exactly",
 
-            // override mark default to prevent browser applying styles
+            // override mark default to prevent browser from applying styles
             "element": "span",
 
             // set style param for all matches
@@ -34,8 +29,8 @@ async function main() {
                 el.style.fontWeight = "bolder"
             },
 
-            // catch all links and their children
-            "exclude": ["a", "a *"]
+            // ignore all links, code blocks, and their children
+            "exclude": ["a", "a *", "pre", "pre *"]
         }
 
 
@@ -46,8 +41,6 @@ async function main() {
         instance.markRegExp(colorExp, options)
 
     })
-
-
 }
 
 
