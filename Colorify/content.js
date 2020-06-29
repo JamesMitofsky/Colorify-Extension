@@ -96,7 +96,7 @@ function requiresBackground(el) {
     console.log("background is darker")
     return {
       state: true,
-      shade: 'red'
+      shade: 'white'
     }
   }
 
@@ -111,10 +111,8 @@ function scanForBackgroundColor(el) {
   let elBackground = window.getComputedStyle(el).getPropertyValue('background-color')
   let colorValues = rgbToObject(elBackground)
 
-  // add counter to prevent crashing/slowness on huge DOMs
-  let counter = 0
 
-  while (colorValues.a == 0 && counter < 10) {
+  while (colorValues.a == 0) {
 
     // select new element to inspect
     el = el.parentNode;
@@ -122,13 +120,9 @@ function scanForBackgroundColor(el) {
     // get background to be checked by next iteration
     elBackground = window.getComputedStyle(el).getPropertyValue('background-color')
     colorValues = rgbToObject(elBackground)
-
-    counter++
-
   }
 
   return colorValues
-
 }
 
 
