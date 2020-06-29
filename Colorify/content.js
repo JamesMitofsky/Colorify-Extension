@@ -10,13 +10,14 @@ async function main() {
 
   // load every color
   let colorsObj = await loadColors()
-  let cssColors = colorsObj.colors
+  let readableColors = colorsObj.colors
 
 
   // check every color
-  cssColors.forEach(color => {
+  readableColors.forEach(color => {
 
-    // set options for mark search
+    let cssColor = color.replace(/ /g, "")
+
     let options = {
 
       // ignore partial matches
@@ -26,13 +27,12 @@ async function main() {
       // ignore all links, code blocks, and their children
       "exclude": ["a", "a *", "pre", "pre *"],
 
-      // set style param for all matches
+      // set style param for each  match
       "each": (el) => {
-        el.style.color = color
+        el.style.color = cssColor
         el.style.fontWeight = "bolder"
 
         let background = requiresBackground(el)
-
         if (background.state) {
           // el.style.backgroundColor = background.shade
           el.style.textShadow = `0 0 2px ${background.shade}`
@@ -41,10 +41,8 @@ async function main() {
     }
 
 
-    // optionally catch pluralized color
+    // catch singular and plural forms with any casing
     let colorExp = new RegExp(`(\\b${color}s?\\b)`, 'i')
-
-    // match color exactly
     instance.markRegExp(colorExp, options)
 
   })
@@ -83,7 +81,8 @@ function requiresBackground(el) {
     // 0.14285 (7.0:1) for small text in AAA-level
     // 0.22222 (4.5:1) for small text in AA-level, or large text in AAA-level
     // 0.33333 (3.0:1) for large text in AA-level
-  if (result.ratio < .333333) return { state: false }
+    // set to .5 based on silver appearing against white
+  if (result.ratio < .55555) return { state: false }
   
 
   if (result.backgroundLuminance >= result.colorLuminance) {
