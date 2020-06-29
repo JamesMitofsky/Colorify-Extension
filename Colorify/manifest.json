@@ -1,7 +1,7 @@
 {
     "name": "Colorify",
     "version": "1.0.0",
-    "manifest_version": 1,
+    "manifest_version": 2,
     "description": "Changes the hue of words to the color they're naming.",
     "author": "James Tedesco",
     "icons": {
