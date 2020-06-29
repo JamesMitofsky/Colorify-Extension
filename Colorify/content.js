@@ -18,27 +18,26 @@ async function main() {
 
     // set options for mark search
     let options = {
+
       // ignore partial matches
       "accuracy": "exactly",
-
       // override mark default to prevent browser from applying styles
       "element": "span",
+      // ignore all links, code blocks, and their children
+      "exclude": ["a", "a *", "pre", "pre *"],
 
       // set style param for all matches
       "each": (el) => {
         el.style.color = color
         el.style.fontWeight = "bolder"
 
-        requiresBackground(el)
-        console.log(el.innerText)
+        let background = requiresBackground(el)
 
-        // if (requiresBackground(el)) {
-        //   el.style.textShadow = "0 0 2px black"
-        // }
-      },
-
-      // ignore all links, code blocks, and their children
-      "exclude": ["a", "a *", "pre", "pre *"]
+        if (background.state) {
+          // el.style.backgroundColor = background.shade
+          el.style.textShadow = `0 0 2px ${background.shade}`
+        }
+      }
     }
 
 
@@ -64,30 +63,73 @@ async function loadColors() {
 
 function requiresBackground(el) {
 
+  // get elm color
   let computedStyles = window.getComputedStyle(el)
+  let elColorStyle = computedStyles.getPropertyValue('color')
+  let elColor = rgbToObject(elColorStyle)
 
-  let elColor = computedStyles.getPropertyValue('color')
-  let elBackground = computedStyles.getPropertyValue('background-color')
+  // return object from function with RGB
+  let elBackground = scanForBackgroundColor(el)
 
 
   // must be fed the computed style (which is RGB or HEX)
-
-  //  elColor = '000000'
-  //  elBackground = '000000'
-
-  console.log(el, elColor, elBackground)
-
-
   let result = calculateRatio(elColor, elBackground)
 
-  console.log(result)
+  console.log(elBackground)
+  console.log(result.backgroundLuminance, result.colorLuminance)
 
-  // return whether a background is needed
 
+  // if ratio is accessible, exit function
+    // 0.14285 (7.0:1) for small text in AAA-level
+    // 0.22222 (4.5:1) for small text in AA-level, or large text in AAA-level
+    // 0.33333 (3.0:1) for large text in AA-level
+  if (result.ratio < .333333) return { state: false }
+  
+
+  if (result.backgroundLuminance >= result.colorLuminance) {
+    console.log("background is lighter,")
+    return {
+      state: true,
+      shade: 'black'
+    }
+  } else {
+    console.log("background is darker")
+    return {
+      state: true,
+      shade: 'red'
+    }
+  }
 
 
 }
 
+
+function scanForBackgroundColor(el) {
+
+
+  // set baseline to traverse
+  let elBackground = window.getComputedStyle(el).getPropertyValue('background-color')
+  let colorValues = rgbToObject(elBackground)
+
+  // add counter to prevent crashing/slowness on huge DOMs
+  let counter = 0
+
+  while (colorValues.a == 0 && counter < 10) {
+
+    // select new element to inspect
+    el = el.parentNode;
+
+    // get background to be checked by next iteration
+    elBackground = window.getComputedStyle(el).getPropertyValue('background-color')
+    colorValues = rgbToObject(elBackground)
+
+    counter++
+
+  }
+
+  return colorValues
+
+}
 
 
 // function from https://stackoverflow.com/a/5624139/3695983
@@ -114,7 +156,8 @@ function rgbToObject(rgb) {
   rgbObj = {
     r: parseInt(rgbArray[0]),
     g: parseInt(rgbArray[1]),
-    b: parseInt(rgbArray[2])
+    b: parseInt(rgbArray[2]),
+    a: parseInt(rgbArray[3])
   }
 
 
@@ -135,36 +178,18 @@ function luminance(r, g, b) {
   return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
 }
 
+
+// assume values are given as object of RGB
 function calculateRatio(color, background) {
-
-
-  // if matches RGB, skip processing
-  let rgbPattern = new RegExp('(?<=RGBA*\\().*(?=\\))', 'i')
-
-  if (rgbPattern.test(color)) {
-    colorRGB = rgbToObject(color, rgbPattern)
-  } else {
-    colorRGB = hexToRgb(color);
-
-  }
-
-  if (rgbPattern.test(background)) {
-    backgroundRGB = rgbToObject(background, rgbPattern)
-  } else {
-    backgroundRGB = hexToRgb(background);
-  }
-
-
-  // calculate the relative luminance
-  const backgroundLuminance = luminance(backgroundRGB.r, backgroundRGB.g, backgroundRGB.b);
-  const colorLuminance = luminance(colorRGB.r, colorRGB.g, colorRGB.b);
-
-  console.log(backgroundLuminance, colorLuminance)
+  
+  // calculate the relative luminance; higher number means lighter
+  const backgroundLuminance = luminance(background.r, background.g, background.b);
+  const colorLuminance = luminance(color.r, color.g, color.b);
 
   // calculate the color contrast ratio
   const ratio = backgroundLuminance > colorLuminance
     ? ((colorLuminance + 0.05) / (backgroundLuminance + 0.05))
     : ((backgroundLuminance + 0.05) / (colorLuminance + 0.05));
 
-  return ratio;
+  return { ratio, backgroundLuminance, colorLuminance }
 }
