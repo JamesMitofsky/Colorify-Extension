@@ -5,22 +5,27 @@ main()
 async function main() {
 
 
-  // load colors in batches from json - disabled because it slowed down performance 2x from 3s to 6s
-  let colorsObj = await loadColors()
-  let colorsArray = [colorsObj.commonColors, colorsObj.uncommonColors]
+    // load colors in batches from json - disabled because it slowed down performance 2x from 3s to 6s
+    let colorsArray = await loadColors()
 
-  colorsArray.forEach(arrayGroup => {
-    
-    markColor(arrayGroup)
+    // colorsArray.forEach(arrayGroup => {
 
-  })
+    //   // todo - maybe await for each
+    //   await markColor(arrayGroup.colors)
+
+    // })
+
+
+    await markColor(colorsArray[0].colors)
+
+    await markColor(colorsArray[1].colors)
 
 }
 
 
 
 
-function markColor(readableColors) {
+async function markColor(readableColors) {
 
   // declare searching every element
   let instance = new Mark(document.querySelector("body"));
@@ -59,8 +64,13 @@ function markColor(readableColors) {
     instance.markRegExp(colorExp, options)
 
   })
+    await sleep(5);
 }
 
+function sleep(ms) {
+    // [What is the JavaScript version of sleep()?](https://stackoverflow.com/a/39914235/1366033)
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 
 async function loadColors() {
