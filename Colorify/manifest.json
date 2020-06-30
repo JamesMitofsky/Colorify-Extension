@@ -14,7 +14,7 @@
             "<all_urls>"
         ],
         "js": [
-            "mark.min.js",
+            "mark.js",
             "content.js"
         ]
     }],
