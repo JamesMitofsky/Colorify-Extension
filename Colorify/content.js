@@ -35,6 +35,7 @@ async function markColor(readableColors) {
             "exclude": ["a", "a *", "pre", "pre *"],
             // keep search values connected
             "separateWordSearch": false,
+            "acrossElements": true,
 
             // set style param for each  match
             "each": (el) => {
