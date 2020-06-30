@@ -4,28 +4,40 @@ main()
 
 async function main() {
 
-  // declare searching every element
-  var instance = new Mark(document.querySelector("body"));
 
-
-  // load every color
+  // load colors in batches from json - disabled because it slowed down performance 2x from 3s to 6s
   let colorsObj = await loadColors()
-  let readableColors = colorsObj.colors
+  let colorsArray = [colorsObj.commonColors, colorsObj.uncommonColors]
 
+  colorsArray.forEach(arrayGroup => {
+    
+    markColor(arrayGroup)
+
+  })
+
+}
+
+
+
+
+function markColor(readableColors) {
+
+  // declare searching every element
+  let instance = new Mark(document.querySelector("body"));
 
   // check every color
   readableColors.forEach(color => {
-
     let cssColor = color.replace(/ /g, "")
 
     let options = {
-
       // ignore partial matches
       "accuracy": "exactly",
       // override mark default to prevent browser from applying styles
       "element": "span",
       // ignore all links, code blocks, and their children
       "exclude": ["a", "a *", "pre", "pre *"],
+      // keep search values connected
+      "separateWordSearch": false,
 
       // set style param for each  match
       "each": (el) => {
@@ -43,6 +55,7 @@ async function main() {
 
     // catch singular and plural forms with any casing
     let colorExp = new RegExp(`(\\b${color}s?\\b)`, 'i')
+
     instance.markRegExp(colorExp, options)
 
   })
@@ -78,12 +91,12 @@ function requiresBackground(el) {
 
 
   // if ratio is accessible, exit function
-    // 0.14285 (7.0:1) for small text in AAA-level
-    // 0.22222 (4.5:1) for small text in AA-level, or large text in AAA-level
-    // 0.33333 (3.0:1) for large text in AA-level
-    // set to .5 based on silver appearing against white
+  // 0.14285 (7.0:1) for small text in AAA-level
+  // 0.22222 (4.5:1) for small text in AA-level, or large text in AAA-level
+  // 0.33333 (3.0:1) for large text in AA-level
+  // set to .5 based on silver appearing against white
   if (result.ratio < .55555) return { state: false }
-  
+
 
   if (result.backgroundLuminance >= result.colorLuminance) {
     console.log("background is lighter,")
@@ -174,7 +187,7 @@ function luminance(r, g, b) {
 
 // assume values are given as object of RGB
 function calculateRatio(color, background) {
-  
+
   // calculate the relative luminance; higher number means lighter
   const backgroundLuminance = luminance(background.r, background.g, background.b);
   const colorLuminance = luminance(color.r, color.g, color.b);
