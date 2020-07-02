@@ -1,77 +1,62 @@
 main()
 
+var t0 = performance.now()
+var t1 = performance.now()
 
 async function main() {
+    logPerf("init")
 
+    var allText = document.body.textContent
+    var usedColors = allColors.filter(c => allText.includes(c))
+    logPerf("used colors")
 
-    // load colors in batches from json - disabled because it slowed down performance 2x from 3s to 6s
-    let colorsArray = await loadColors()
-
-    // [Using async/await with a forEach loop](https://stackoverflow.com/a/37576787/1366033)
-    for (const group of colorsArray) {
-        await markColor(group.colors)
-    }
-
-}
-
-
-
-
-async function markColor(readableColors) {
+    let colorExp = new RegExp(`\\b(${usedColors.join("|")})s?\\b`, 'i')
 
     // declare searching every element
-    let instance = new Mark(document.querySelector("body"));
+    let instance = new Mark(document.body);
 
-    // check every color
-    readableColors.forEach(color => {
-        let cssColor = color.replace(/ /g, "")
+    let options = {
+        element: "span", // override mark default to prevent browser from applying styles
+        exclude: ["a", "a *", "pre", "pre *"], // ignore all links, code blocks, and their children
+        className: "colorify",
+        each: onMark
+    }
 
-        let options = {
-            // ignore partial matches
-            "accuracy": "exactly",
-            // override mark default to prevent browser from applying styles
-            "element": "span",
-            // ignore all links, code blocks, and their children
-            "exclude": ["a", "a *", "pre", "pre *"],
-            // keep search values connected
-            "separateWordSearch": false,
+    instance.markRegExp(colorExp, options)
 
-            // set style param for each  match
-            "each": (el) => {
-                el.style.color = cssColor
-                el.style.fontWeight = "bolder"
+    logPerf("mark")
 
-                let background = requiresBackground(el)
-                if (background.state) {
-                    // el.style.backgroundColor = background.shade
-                    el.style.textShadow = `0 0 2px ${background.shade}`
-                }
-            }
-        }
+    let matches = [...document.querySelectorAll(".colorify")]
 
+    //await Promise.all(matches.map(onMark));
 
-        // catch singular and plural forms with any casing
-        let colorExp = new RegExp(`(\\b${color}s?\\b)`, 'i')
+    logPerf("colorify")
 
-        instance.markRegExp(colorExp, options)
+    console.log(`${usedColors.length} unique colors`)
+    console.log(`${matches.length} matched elements`)
 
-    })
-    await sleep(5);
-}
-
-function sleep(ms) {
-    // [What is the JavaScript version of sleep()?](https://stackoverflow.com/a/39914235/1366033)
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 
+async function onMark(el) {
+    let color = el.textContent
+    let cssColor = color.replace(/ |s$/g, "")
+    el.style.color = cssColor
+    el.style.fontWeight = "bolder"
 
-async function loadColors() {
-    const url = chrome.runtime.getURL('data/colors.json');
-    let response = await fetch(url)
-    let json = await response.json()
+    let background = requiresBackground(el)
+    if (background.state) {
+        // el.style.backgroundColor = background.shade
+        el.style.textShadow = `0 0 2px ${background.shade}`
+    }
 
-    return json
+    await new Promise(r => setTimeout(r, 0));
+}
+
+function logPerf(msg) {
+    t1 = performance.now()
+    console.log(`${msg}: +${t0 ? (t1 - t0).toFixed(5) : 0} ms`)
+    t0 = t1
 }
 
 
@@ -89,8 +74,8 @@ function requiresBackground(el) {
     // must be fed the computed style (which is RGB or HEX)
     let result = calculateRatio(elColor, elBackground)
 
-    console.log(elBackground)
-    console.log(result.backgroundLuminance, result.colorLuminance)
+    // console.log(elBackground)
+    // console.log(result.backgroundLuminance, result.colorLuminance)
 
 
     // if ratio is accessible, exit function
@@ -102,13 +87,13 @@ function requiresBackground(el) {
 
 
     if (result.backgroundLuminance >= result.colorLuminance) {
-        console.log("background is lighter,")
+        // console.log("background is lighter,")
         return {
             state: true,
             shade: 'black'
         }
     } else {
-        console.log("background is darker")
+        // console.log("background is darker")
         return {
             state: true,
             shade: 'white'

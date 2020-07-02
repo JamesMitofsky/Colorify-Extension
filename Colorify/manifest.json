@@ -15,7 +15,8 @@
         ],
         "js": [
             "mark.js",
-            "content.js"
+            "colors.js",
+            "colorify.js"
         ]
     }],
     "web_accessible_resources": [
