@@ -11,7 +11,7 @@ This is an extension for Chrome browsers which detects css recognized color name
 
 ## Example
 
-The quick brown fox jumps over the lazy rainbow dog.
+If the extension is running, you should be viewing a radical improvement to quality of life:
 
 Black, silver, gray, white, maroon, red, purple, fuchsia, green, lime, olive, yellow, navy, blue, teal, and aqua.
 
