@@ -1,11 +1,12 @@
 # Colorify
 
-A Chrome extension which changes the hue of words on any website to match the name of a color. For example, if the word "blue" is on a website, the extension will recolor the word to _literally_ be blue. Any named color in CSS will be picked up like this!
+A Chrome extension which changes the hue of words on any website to match the name of a color. For example, if the word "blue" is on a website, the extension will recolor the word to _literally_ be blue. [🧑‍🎨 Install the extension!](https://chrome.google.com/webstore/detail/colorify/gkfgdccfjiaokigodbfmgbdifbemopdb)
 
-[Install the extension here!](https://chrome.google.com/webstore/detail/colorify/gkfgdccfjiaokigodbfmgbdifbemopdb)
+## Demo
+If you happened to find yourself on the Rainbow page of Wikipedia, you might find yourself awash in colors.
+<img width="650" alt="Capture d’écran 2022-07-04 à 15 07 14" src="https://user-images.githubusercontent.com/12516538/177161280-abcc4999-e9aa-4e73-8716-954e06952c3f.png">
 
 ## Run Locally
-
 1. Navigate to `chrome://extensions/`
 2. Enable "Developer Mode"
 3. Load Unpacked
