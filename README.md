@@ -7,6 +7,8 @@ This is a picture of the rainbow page on Wikipedia:
 
 <img width="650" alt="Capture d’écran 2022-07-04 à 15 07 14" src="https://user-images.githubusercontent.com/12516538/177161280-abcc4999-e9aa-4e73-8716-954e06952c3f.png">
 
+## Demo
+
 But if you install the extension, you should be viewing a radical improvement to your quality of life:
 
 Black, silver, gray, white, maroon, red, purple, fuchsia, green, lime, olive, yellow, navy, blue, teal, and aqua.
