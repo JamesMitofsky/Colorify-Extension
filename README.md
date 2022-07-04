@@ -5,7 +5,7 @@ A Chrome extension which changes the hue of words on any website to match the na
 ## Example
 This is an excerpt from the rainbow page of Wikipedia:
 
-<img width="650" alt="Capture d’écran 2022-07-04 à 15 07 14" src="https://user-images.githubusercontent.com/12516538/177161280-abcc4999-e9aa-4e73-8716-954e06952c3f.png">
+<img width="450" alt="Capture d’écran 2022-07-04 à 15 07 14" src="https://user-images.githubusercontent.com/12516538/177161280-abcc4999-e9aa-4e73-8716-954e06952c3f.png">
 
 ## Demo
 
