@@ -1,29 +1,22 @@
 {
-    "name": "Colorify",
-    "version": "1.0.0",
-    "manifest_version": 2,
-    "description": "Changes the hue of words to the color they're naming.",
-    "author": "James Tedesco",
-    "icons": {
-        "16": "icons/icon16.png",
-        "48": "icons/icon48.png",
-        "128": "icons/icon128.png"
-    },
-    "content_scripts": [{
-        "matches": [
-            "<all_urls>"
-        ],
-        "js": [
-            "mark.js",
-            "colors.js",
-            "colorify.js"
-        ]
-    }],
-    "web_accessible_resources": [
-        "data/colors.json"
-    ],
-    "browser_action": {
-        "default_popup": "popup.html",
-        "default_title": "making words better since 2020"
+  "name": "Colorify",
+  "version": "2.0.0",
+  "manifest_version": 3,
+  "description": "Changes the hue of words to the color they're naming.",
+  "author": "James Tedesco",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["mark.js", "colors.js", "colorify.js"]
     }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "making words better since 2020"
+  }
 }
